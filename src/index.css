@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-wu-blue: #40BDF2;
+  --color-wu-yellow: #FFD83D;
+  --color-wu-black: #111111;
+  --font-display: 'Noto Sans TC', sans-serif;
+  --font-body: 'Inter', 'Noto Sans TC', sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    background-color: #ffffff;
+    color: #111111;
+  }
+}
+
+@layer components {
+  .slant-decoration {
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+  }
+  .slant-decoration-reverse {
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+}

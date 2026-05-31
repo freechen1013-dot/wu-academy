@@ -1,0 +1,99 @@
+{
+  "brand": {
+    "zh": "無學院",
+    "en": "Wu Academy",
+    "slogan": "無界．無限．無懼",
+    "founder": "陳孚瑞",
+    "founderEn": "Felix Chen (Fu-Rui Chen)"
+  },
+  "email": "freechen1013@gmail.com",
+  "stats": {
+    "admin": 1,
+    "students": 3,
+    "instructors": 1
+  },
+  "coreValues": [
+    {
+      "zhTitle": "無界",
+      "enTitle": "Borderless",
+      "zhText": "課程內容無邊界、培養跨界整合思維",
+      "enText": "No borders between subjects, which insists the development of \"borderless thinking and skills\".",
+      "detail": "在無學院，沒有固定不變的學科藩籬。你可以教任何你有熱情、有研究的事物，無論是文學、程式、音樂、科學或哲學。我們相信真正的知識不該被分類標籤限制。"
+    },
+    {
+      "zhTitle": "無限",
+      "enTitle": "Limitless",
+      "zhText": "師生身分無限制、提供良好教學互動",
+      "enText": "No limit on the \"educational roles\", students can be teachers and teachers can be students! Creating high-quality \"teaching and learning\" educational relationship.",
+      "detail": "在這裡，學生可以是講師，講師也可以是學生。我們打破傳統教室的權力結構，建立平等、互助、互相學習的社群。教學相長，沒有上限。"
+    },
+    {
+      "zhTitle": "無懼",
+      "enTitle": "Fearless",
+      "zhText": "學習過程無壓力、鼓勵打破常規的想法與概念",
+      "enText": "No fear on learnings, encouraging ideas that are innovative, creative, and challenge norms.",
+      "detail": "沒有標準答案的束縛，沒有分數的恐懼。我們鼓勵天馬行空的想像、挑戰現狀的勇氣，以及犯錯後重新出發的韌性。在無學院，你不需要害怕問「笨問題」。"
+    }
+  ],
+  "courseModel": [
+    { "icon": "clock", "text": "8:25 會點名並加分" },
+    { "icon": "users", "text": "學生輪流擔任講師，教學自己有興趣、擅長的內容" },
+    { "icon": "presentation", "text": "每次上課 30 分鐘，一位講師教學 15 分鐘（允許短暫超時 5 分鐘）" },
+    { "icon": "chat", "text": "課程全程開放學生舉手問問題" },
+    { "icon": "question", "text": "課程結束老師以「一問」方式佈置作業" },
+    { "icon": "template", "text": "課程範本會共用給各位，請各位自行複製" }
+  ],
+  "timeline2026": [
+    { "phase": "期初", "date": "5/29～8/14", "description": "交代今年課程週期、上課時間與行事曆，並認識新同學。" },
+    { "phase": "期中", "date": "8/21", "description": "設立「期中有獎搶答」活動，供學生賺取學期積分。" },
+    { "phase": "期中～期末", "date": "8/28～9/25", "description": "跨界 project 製作，讓各位結合所學學以致用。" },
+    { "phase": "期末", "date": "10/2", "description": "成績發還 + 頒獎活動。" }
+  ],
+  "oneProblem": {
+    "title": "一問",
+    "enTitle": "The Problem",
+    "description": "講師在每堂課結尾問出開放式問題作為作業，讓學生自由尋找答案。"
+  },
+  "calendar": {
+    "startDate": "2026-05-29",
+    "sessions": [
+      { "date": "2026-05-29", "time": "8:00-8:15", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
+      { "date": "2026-06-05", "time": "8:00-8:15", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
+      { "date": "2026-06-12", "time": "8:00-8:15", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
+      { "date": "2026-06-19", "time": "8:00-8:15", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" }
+    ]
+  },
+  "instructors": [
+    {
+      "name": "Felix（陳孚瑞）",
+      "role": "院長 / 無院講師",
+      "subject": "Critical Thinking in English Reading and Comprehension",
+      "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work",
+      "sessions": "",
+      "avatar": "/assets/felix-profile.JPEG"
+    }
+  ],
+  "project": {
+    "title": "跨界專案",
+    "enTitle": "Borderless Project",
+    "description": "結合課程所學一起完成一個有趣的專案，使知識跨越界線完成應用。",
+    "detail": "在期中到期末期間，學生會把不同課程中學到的知識結合起來，共同完成一個有趣的專案。這個專案的目標是讓知識跨越學科界線，真正被應用在創作、研究、表達或解決問題之中。"
+  },
+  "awards": [
+    { "name": "成績優異獎", "condition": "學期學生積分最高" },
+    { "name": "腦洞大開獎", "condition": "由講師投票，作業內容最有創意與想法者" },
+    { "name": "學習動力獎", "condition": "上課互動次數最多者" },
+    { "name": "學期最佳講師 / 學期最佳學生", "condition": "由全體成員投票決定" },
+    { "name": "認真教授獎", "condition": "學期講師積分最高" },
+    { "name": "氛圍掌控獎", "condition": "由學生投票授課氛圍最好者" },
+    { "name": "最佳一問獎", "condition": "所給予的作業完成率最高、質量最好者" }
+  ],
+  "resources": {
+    "courseTemplateTitle": "無學院課程範本",
+    "description": "提供講師自行複製與修改的課程簡報範本，包含封面、自我介紹、課程目的、內容頁、圖片頁、引用頁、圖表頁、重要概念、Timeline、一問作業與結尾頁。",
+    "file": "/assets/course-example.pdf",
+    "exampleTitle": "優質課程範例",
+    "exampleDescription": "Felix 講師的 Critical Thinking in English Reading and Comprehension 課程簡報，可作為講師準備課程的參考。",
+    "exampleFile": "/assets/course-example.pdf"
+  }
+}
