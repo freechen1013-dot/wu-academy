@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: wu-academy
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: node backend/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+    autoDeploy: true
