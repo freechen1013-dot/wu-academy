@@ -141,10 +141,29 @@ function Calendar({ calendarData }) {
 }
 
 export default function HomePage() {
-  const site = useSiteData()
+  const { isLoading, error, brand, stats, coreValues, courseModel, timeline2026, oneProblem, calendar } = useSiteData()
   const [modalValue, setModalValue] = useState(null)
 
-  const { brand, stats, coreValues, courseModel, timeline2026, oneProblem, calendar } = site
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-wu-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">載入中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500">載入失敗：{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Layout>
@@ -178,7 +197,7 @@ export default function HomePage() {
               { label: '講師', value: stats.instructors },
             ].map((stat) => (
               <div key={stat.label} className="bg-white rounded-2xl p-8 text-center shadow-sm hover:shadow-md transition-shadow border-l-4 border-wu-blue">
-                <p className="text-5xl md:text-6xl font-black text-wu-black mb-2">{String(stat.value).padStart(2, '0')}</p>
+                <p className="text-5xl md:text-6xl font-black text-wu-black mb-2">{String(stat.value || 0).padStart(2, '0')}</p>
                 <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
               </div>
             ))}
@@ -194,7 +213,7 @@ export default function HomePage() {
             <p className="text-gray-500">三大核心精神</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {coreValues.map((value) => (
+            {(coreValues || []).map((value) => (
               <button
                 key={value.enTitle}
                 onClick={() => setModalValue(value)}
@@ -207,7 +226,7 @@ export default function HomePage() {
                     alt="無"
                     className="h-28 w-auto object-contain opacity-90 group-hover:scale-110 transition-transform duration-300"
                   />
-                  <span className="text-5xl font-black text-wu-black relative top-4">{value.zhTitle[1]}</span>
+                  <span className="text-5xl font-black text-wu-black relative top-4">{value.zhTitle?.[1]}</span>
                 </div>
                 <h3 className="text-lg font-bold text-wu-blue mb-2">{value.enTitle}</h3>
                 <div className="mt-4 text-xs text-gray-400 group-hover:text-wu-blue transition-colors">
@@ -228,7 +247,7 @@ export default function HomePage() {
             <p className="text-gray-500">Course Model</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {courseModel.map((item, idx) => {
+            {(courseModel || []).map((item, idx) => {
               const Icon = iconMap[item.icon]
               return (
                 <div key={idx} className="bg-white rounded-xl p-6 flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow border-t-4 border-wu-yellow">
@@ -252,7 +271,7 @@ export default function HomePage() {
           </div>
           <div className="relative">
             <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-wu-blue/30 transform md:-translate-x-1/2" />
-            {timeline2026.map((item, idx) => (
+            {(timeline2026 || []).map((item, idx) => (
               <div key={idx} className={`relative flex items-start mb-8 last:mb-0 ${idx % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-wu-blue rounded-full transform -translate-x-1/2 mt-1.5 z-10" />
                 <div className={`ml-12 md:ml-0 md:w-1/2 ${idx % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}>
@@ -293,7 +312,7 @@ export default function HomePage() {
             <p className="text-gray-500">點擊日期查看課程詳情</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Calendar calendarData={calendar} />
+            {calendar && <Calendar calendarData={calendar} />}
             <div className="space-y-4">
               <div className="bg-white rounded-xl p-6 shadow-sm">
                 <h3 className="font-bold text-wu-black mb-4 flex items-center gap-2">
@@ -301,7 +320,7 @@ export default function HomePage() {
                   即將到來的課程
                 </h3>
                 <div className="space-y-3">
-                  {calendar.sessions.slice(0, 3).map((s, idx) => (
+                  {(calendar?.sessions || []).slice(0, 3).map((s, idx) => (
                     <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <div className="text-center min-w-[60px]">
                         <p className="text-xs text-gray-400">{new Date(s.date).getMonth() + 1}月</p>

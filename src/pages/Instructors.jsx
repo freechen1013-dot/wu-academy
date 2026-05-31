@@ -2,8 +2,10 @@ import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Instructors() {
-  const site = useSiteData()
-  const { instructors } = site
+  const { isLoading, error, instructors } = useSiteData()
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">載入中...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
     <Layout>
@@ -15,7 +17,7 @@ export default function Instructors() {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            {instructors.map((instructor, idx) => (
+            {(instructors || []).map((instructor, idx) => (
               <div key={idx} className="relative bg-white rounded-2xl border-2 border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group">
                 <div className="absolute top-0 left-0 w-24 h-full bg-wu-blue slant-decoration opacity-90" />
                 

@@ -2,8 +2,10 @@ import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Resources() {
-  const site = useSiteData()
-  const { resources } = site
+  const { isLoading, error, resources } = useSiteData()
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">載入中...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
     <Layout>
@@ -21,11 +23,11 @@ export default function Resources() {
                   <svg className="w-6 h-6 text-wu-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-wu-black">{resources.courseTemplateTitle}</h3>
+                  <h3 className="font-bold text-wu-black">{(resources || {}).courseTemplateTitle || '課程範本'}</h3>
                   <p className="text-xs text-gray-400">PDF · 13 頁</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6">{resources.description}</p>
+              <p className="text-sm text-gray-600 leading-relaxed mb-6">{(resources || {}).description}</p>
               
               <div className="space-y-2">
                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">範本內容</h4>
@@ -59,11 +61,11 @@ export default function Resources() {
                   <svg className="w-6 h-6 text-wu-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-wu-black">{resources.exampleTitle}</h3>
+                  <h3 className="font-bold text-wu-black">{(resources || {}).exampleTitle || '優質課程範例'}</h3>
                   <p className="text-xs text-gray-400">PDF · 14 頁</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6">{resources.exampleDescription}</p>
+              <p className="text-sm text-gray-600 leading-relaxed mb-6">{(resources || {}).exampleDescription}</p>
               
               <div className="bg-gray-50 rounded-xl p-4 mb-6">
                 <div className="flex items-center gap-3">
@@ -77,7 +79,7 @@ export default function Resources() {
 
               <div className="flex gap-3">
                 <a
-                  href={resources.exampleFile}
+                  href={(resources || {}).exampleFile}
                   download
                   className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-wu-yellow text-wu-black font-bold rounded-xl hover:bg-wu-yellow/90 transition-colors"
                 >
@@ -85,7 +87,7 @@ export default function Resources() {
                   下載範例
                 </a>
                 <a
-                  href={resources.exampleFile}
+                  href={(resources || {}).exampleFile}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-200 text-gray-700 font-bold rounded-xl hover:border-wu-yellow hover:text-wu-black transition-colors"

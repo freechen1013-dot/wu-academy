@@ -2,8 +2,10 @@ import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Projects() {
-  const site = useSiteData()
-  const { project } = site
+  const { isLoading, error, project } = useSiteData()
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">載入中...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   const placeholderProjects = [
     { title: '專案一', desc: '即將登場' },

@@ -3,9 +3,7 @@ import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Contact() {
-  const site = useSiteData()
-  const { email } = site
-
+  const { isLoading, error, email } = useSiteData()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,6 +25,9 @@ export default function Contact() {
     window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
     setSubmitted(true)
   }
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">載入中...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
     <Layout>

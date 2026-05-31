@@ -2,8 +2,10 @@ import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Awards() {
-  const site = useSiteData()
-  const { awards } = site
+  const { isLoading, error, awards } = useSiteData()
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">載入中...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
     <Layout>
@@ -16,7 +18,7 @@ export default function Awards() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {awards.map((award, idx) => (
+            {(awards || []).map((award, idx) => (
               <div key={idx} className="relative bg-white rounded-2xl border-2 border-gray-100 p-6 hover:shadow-lg transition-shadow group overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-wu-blue slant-decoration" />
                 
