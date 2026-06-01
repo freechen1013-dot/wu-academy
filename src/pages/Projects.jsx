@@ -1,4 +1,3 @@
-import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Projects() {
@@ -14,7 +13,7 @@ export default function Projects() {
   ]
 
   return (
-    <Layout>
+    <>
       <section className="bg-wu-black py-16 md:py-24 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-wu-yellow/10 rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 text-center">
@@ -72,6 +71,6 @@ export default function Projects() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   )
 }

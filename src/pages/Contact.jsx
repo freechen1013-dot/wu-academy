@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Contact() {
@@ -30,8 +29,7 @@ export default function Contact() {
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
-    <Layout>
-      <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-wu-black mb-2">報名課程</h2>
@@ -156,6 +154,5 @@ export default function Contact() {
           </div>
         </div>
       </section>
-    </Layout>
   )
 }

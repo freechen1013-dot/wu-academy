@@ -1,4 +1,3 @@
-import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 export default function Instructors() {
@@ -8,8 +7,7 @@ export default function Instructors() {
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">錯誤：{error}</div>
 
   return (
-    <Layout>
-      <section className="py-16 md:py-24 bg-white">
+    <section className="py-16 md:py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-wu-black mb-2">無院講師</h2>
@@ -55,6 +53,5 @@ export default function Instructors() {
           </div>
         </div>
       </section>
-    </Layout>
   )
 }

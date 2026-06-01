@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import Layout from '../components/Layout'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 // Icon components
@@ -166,7 +165,7 @@ export default function HomePage() {
   }
 
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-white py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
@@ -346,6 +345,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   )
 }
