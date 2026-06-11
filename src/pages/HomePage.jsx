@@ -80,9 +80,10 @@ function Calendar({ calendarData }) {
     sessionMap[day].push(s)
   })
 
-  const colorMap = { blue: 'bg-wu-blue', yellow: 'bg-wu-yellow', default: 'bg-wu-yellow' }
-  const colorBgMap = { blue: 'bg-wu-blue/20 hover:bg-wu-blue/40', yellow: 'bg-wu-yellow/20 hover:bg-wu-yellow/40', default: 'bg-wu-yellow/20 hover:bg-wu-yellow/40' }
-  const colorPanelMap = { blue: 'bg-wu-blue/10', yellow: 'bg-wu-yellow/10', default: 'bg-wu-blue/10' }
+  const instructorColors = { Felix: 'bg-wu-yellow', August: 'bg-wu-blue' }
+  const instructorPanelColors = { Felix: 'bg-wu-yellow/10', August: 'bg-wu-blue/10' }
+  const getInstructorColor = (name) => instructorColors[name] || 'bg-wu-yellow'
+  const getPanelColor = (name) => instructorPanelColors[name] || 'bg-wu-yellow/10'
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1))
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1))
@@ -126,7 +127,7 @@ function Calendar({ calendarData }) {
                 {sessionMap[day] && (
                   <div className="flex gap-0.5 mt-0.5">
                     {sessionMap[day].map((s, i) => (
-                      <span key={i} className={`w-1.5 h-1.5 rounded-full ${colorMap[s.color] || colorMap.default}`} />
+                      <span key={i} className={`w-1.5 h-1.5 rounded-full ${getInstructorColor(s.instructor)}`} />
                     ))}
                   </div>
                 )}
@@ -137,7 +138,7 @@ function Calendar({ calendarData }) {
       </div>
 
       {selectedSession && (
-        <div className={`mt-6 rounded-xl p-4 ${selectedSession.length <= 1 ? colorPanelMap[selectedSession[0]?.color] || colorPanelMap.default : 'bg-wu-yellow/10'}`}>
+        <div className={`mt-6 rounded-xl p-4 ${selectedSession.length <= 1 ? getPanelColor(selectedSession[0]?.instructor) : 'bg-wu-yellow/10'}`}>
           <div className="flex items-center justify-between mb-2">
             <h4 className="font-bold text-wu-black">
               {selectedSession.length > 1 ? `${selectedSession[0].date} 課程` : selectedSession[0].course}
@@ -149,7 +150,7 @@ function Calendar({ calendarData }) {
           {selectedSession.map((s, i) => (
             <div key={i} className={`${i > 0 ? 'mt-3 pt-3 border-t border-gray-200' : ''}`}>
               <div className="flex items-center gap-2 mb-1">
-                <span className={`w-2.5 h-2.5 rounded-full ${colorMap[s.color] || colorMap.default}`} />
+                <span className={`w-2.5 h-2.5 rounded-full ${getInstructorColor(s.instructor)}`} />
                 <p className="font-semibold text-wu-black text-sm">{s.course}</p>
               </div>
               <p className="text-sm text-gray-600 ml-4">時間：{s.time} | 講師：{s.instructor}</p>
@@ -158,6 +159,15 @@ function Calendar({ calendarData }) {
           ))}
         </div>
       )}
+
+      <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-500">
+        {Object.entries(instructorColors).map(([name, color]) => (
+          <div key={name} className="flex items-center gap-1.5">
+            <span className={`w-2.5 h-2.5 rounded-full ${color}`} />
+            <span>{name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
