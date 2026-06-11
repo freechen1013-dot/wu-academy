@@ -56,7 +56,8 @@ function CoreValueModal({ value, onClose }) {
 
 // Interactive Calendar
 function Calendar({ calendarData }) {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 4, 1))
+  const today = new Date()
+  const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [selectedSession, setSelectedSession] = useState(null)
 
   const year = currentDate.getFullYear()
@@ -112,7 +113,9 @@ function Calendar({ calendarData }) {
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
-        {days.map((day, idx) => (
+        {days.map((day, idx) => {
+          const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear()
+          return (
           <div key={idx} className="aspect-square">
             {day && (
               <button
@@ -121,7 +124,7 @@ function Calendar({ calendarData }) {
                   sessionMap[day]
                     ? 'text-wu-black font-bold cursor-pointer'
                     : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                } ${isToday ? 'ring-2 ring-wu-blue ring-offset-1' : ''}`}
               >
                 <span>{day}</span>
                 {sessionMap[day] && (
@@ -134,7 +137,8 @@ function Calendar({ calendarData }) {
               </button>
             )}
           </div>
-        ))}
+          )
+        })}
       </div>
 
       {selectedSession && (
@@ -159,15 +163,6 @@ function Calendar({ calendarData }) {
           ))}
         </div>
       )}
-
-      <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-500">
-        {Object.entries(instructorColors).map(([name, color]) => (
-          <div key={name} className="flex items-center gap-1.5">
-            <span className={`w-2.5 h-2.5 rounded-full ${color}`} />
-            <span>{name}</span>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
