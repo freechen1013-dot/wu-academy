@@ -21,12 +21,18 @@ export default function Instructors() {
                 
                 <div className="relative p-8 md:p-10 flex flex-col md:flex-row gap-6 items-center md:items-start">
                   <div className="flex-shrink-0">
-                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
-                      <img
-                        src="/assets/felix-profile.JPEG"
-                        alt={instructor.name}
-                        className="w-full h-full object-cover object-center"
-                      />
+                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 flex items-center justify-center">
+                      {instructor.avatar ? (
+                        <img
+                          src={instructor.avatar}
+                          alt={instructor.name}
+                          className="w-full h-full object-cover object-center"
+                        />
+                      ) : (
+                        <span className="text-3xl md:text-4xl font-bold text-gray-400">
+                          {instructor.name.charAt(0)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex-1 text-center md:text-left">
