@@ -75,8 +75,14 @@ function Calendar({ calendarData }) {
   const sessionMap = {}
   sessionsInMonth.forEach(s => {
     const d = new Date(s.date)
-    sessionMap[d.getDate()] = s
+    const day = d.getDate()
+    if (!sessionMap[day]) sessionMap[day] = []
+    sessionMap[day].push(s)
   })
+
+  const colorMap = { blue: 'bg-wu-blue', yellow: 'bg-wu-yellow', default: 'bg-wu-yellow' }
+  const colorBgMap = { blue: 'bg-wu-blue/20 hover:bg-wu-blue/40', yellow: 'bg-wu-yellow/20 hover:bg-wu-yellow/40', default: 'bg-wu-yellow/20 hover:bg-wu-yellow/40' }
+  const colorPanelMap = { blue: 'bg-wu-blue/10', yellow: 'bg-wu-yellow/10', default: 'bg-wu-blue/10' }
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1))
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1))
@@ -110,13 +116,20 @@ function Calendar({ calendarData }) {
             {day && (
               <button
                 onClick={() => sessionMap[day] && setSelectedSession(sessionMap[day])}
-                className={`w-full h-full rounded-lg flex items-center justify-center text-sm transition-colors ${
+                className={`w-full h-full rounded-lg flex flex-col items-center justify-center text-sm transition-colors ${
                   sessionMap[day]
-                    ? 'bg-wu-yellow/20 text-wu-black font-bold hover:bg-wu-yellow/40 cursor-pointer'
+                    ? 'text-wu-black font-bold cursor-pointer'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                {day}
+                <span>{day}</span>
+                {sessionMap[day] && (
+                  <div className="flex gap-0.5 mt-0.5">
+                    {sessionMap[day].map((s, i) => (
+                      <span key={i} className={`w-1.5 h-1.5 rounded-full ${colorMap[s.color] || colorMap.default}`} />
+                    ))}
+                  </div>
+                )}
               </button>
             )}
           </div>
@@ -124,15 +137,25 @@ function Calendar({ calendarData }) {
       </div>
 
       {selectedSession && (
-        <div className="mt-6 bg-wu-blue/10 rounded-xl p-4">
+        <div className={`mt-6 rounded-xl p-4 ${selectedSession.length <= 1 ? colorPanelMap[selectedSession[0]?.color] || colorPanelMap.default : 'bg-wu-yellow/10'}`}>
           <div className="flex items-center justify-between mb-2">
-            <h4 className="font-bold text-wu-black">{selectedSession.course}</h4>
+            <h4 className="font-bold text-wu-black">
+              {selectedSession.length > 1 ? `${selectedSession[0].date} 課程` : selectedSession[0].course}
+            </h4>
             <button onClick={() => setSelectedSession(null)} className="text-gray-400 hover:text-gray-600">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
-          <p className="text-sm text-gray-600 mb-1">時間：{selectedSession.time} | 講師：{selectedSession.instructor}</p>
-          <p className="text-sm text-gray-700">{selectedSession.description}</p>
+          {selectedSession.map((s, i) => (
+            <div key={i} className={`${i > 0 ? 'mt-3 pt-3 border-t border-gray-200' : ''}`}>
+              <div className="flex items-center gap-2 mb-1">
+                <span className={`w-2.5 h-2.5 rounded-full ${colorMap[s.color] || colorMap.default}`} />
+                <p className="font-semibold text-wu-black text-sm">{s.course}</p>
+              </div>
+              <p className="text-sm text-gray-600 ml-4">時間：{s.time} | 講師：{s.instructor}</p>
+              <p className="text-sm text-gray-700 ml-4">{s.description}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
