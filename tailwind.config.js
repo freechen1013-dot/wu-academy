@@ -14,7 +14,6 @@ export default {
       colors: {
         'wu-blue': '#40BDF2',
         'wu-yellow': '#FFD83D',
-        'wu-green': '#34D399',
         'wu-black': '#111111',
       },
       fontFamily: {

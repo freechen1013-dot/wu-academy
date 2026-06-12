@@ -32,12 +32,12 @@ const accentStyles = {
     from: 'from-wu-blue',
   },
   green: {
-    border: 'border-wu-green/30',
-    bg: 'bg-wu-green/10',
-    dot: 'bg-wu-green',
-    text: 'text-wu-green',
-    ring: 'ring-wu-green/40',
-    from: 'from-wu-green',
+    border: 'border-emerald-400/30',
+    bg: 'bg-emerald-400/10',
+    dot: 'bg-emerald-400',
+    text: 'text-emerald-500',
+    ring: 'ring-emerald-400/40',
+    from: 'from-emerald-400',
   },
 }
 
