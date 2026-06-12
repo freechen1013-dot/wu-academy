@@ -6,7 +6,7 @@ const navItems = [
   { label: '跨界 Project', href: 'projects.html' },
   { label: '排行榜', href: 'leaderboard.html' },
   { label: '優秀學員', href: 'awards.html' },
-  { label: '課程範本', href: 'resources.html' },
+  { label: '成員資源', href: 'resources.html' },
   { label: '報名課程', href: 'contact.html' },
 ]
 
