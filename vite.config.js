@@ -21,6 +21,7 @@ export default defineConfig({
         awards: resolve(__dirname, 'awards.html'),
         resources: resolve(__dirname, 'resources.html'),
         contact: resolve(__dirname, 'contact.html'),
+        leaderboard: resolve(__dirname, 'leaderboard.html'),
       },
     },
   },

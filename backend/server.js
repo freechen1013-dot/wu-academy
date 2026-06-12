@@ -85,6 +85,51 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Google Sheets 積分資料
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/10NhNqFPifLKOxVr14cWWDYvlyH3YXa7euTTDTr25dkY/gviz/tq?tqx=out:csv';
+let scoresCache = { data: null, timestamp: 0 };
+const CACHE_TTL = 30000; // 30 秒快取
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+  return lines.slice(1).map(line => {
+    const values = line.split(',').map(v => v.replace(/"/g, '').trim());
+    const row = {};
+    headers.forEach((h, i) => { row[h] = values[i] || ''; });
+    return row;
+  });
+}
+
+app.get('/api/scores', async (req, res) => {
+  try {
+    if (Date.now() - scoresCache.timestamp < CACHE_TTL && scoresCache.data) {
+      return res.json(scoresCache.data);
+    }
+
+    const response = await fetch(SHEET_CSV_URL);
+    const csv = await response.text();
+    const rows = parseCSV(csv);
+
+    const scores = rows.map((r, i) => ({
+      rank: 0,
+      name: r['成員'] || '',
+      studentScore: parseInt(r['學員分']) || 0,
+      instructorScore: parseInt(r['講師分']) || 0,
+      totalScore: (parseInt(r['學員分']) || 0) + (parseInt(r['講師分']) || 0),
+    }));
+
+    scores.sort((a, b) => b.totalScore - a.totalScore);
+    scores.forEach((s, i) => { s.rank = i + 1; });
+
+    scoresCache = { data: scores, timestamp: Date.now() };
+    res.json(scores);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch scores' });
+  }
+});
+
 // Catch-all: serve index.html for SPA routes (optional, for future use)
 app.get(/.*/, (req, res) => {
   if (req.path.startsWith('/api')) {
@@ -105,10 +150,12 @@ app.listen(PORT, () => {
   - GET  http://localhost:${PORT}/api/content      (取得全站資料)
   - GET  http://localhost:${PORT}/api/content/stats  (取得統計資料)
   - GET  http://localhost:${PORT}/api/content/awards (取得獎項資料)
+  - GET  http://localhost:${PORT}/api/scores        (取得積分排行榜)
   - PUT  http://localhost:${PORT}/api/content/:section (更新特定區塊)
   - POST http://localhost:${PORT}/api/content      (更新全站資料)
   
   資料檔案: backend/data.json
+  試算表: Google Sheets (30s 快取)
   
   伺服器運行中... 🚀
   `);
