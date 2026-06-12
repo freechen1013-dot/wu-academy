@@ -28,9 +28,11 @@ export default function LeaderboardPage() {
   }, [])
 
   function withRank(list, key) {
+    let rank = 0
     return list.map((s, i, arr) => {
       const prev = arr[i - 1]
-      s.displayRank = prev && s[key] === prev[key] ? prev.displayRank : i + 1
+      if (!prev || s[key] !== prev[key]) rank = rank + 1
+      s.displayRank = rank
       return s
     })
   }

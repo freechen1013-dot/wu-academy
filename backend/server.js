@@ -130,9 +130,11 @@ app.get('/api/scores', async (req, res) => {
     }));
 
     scores.sort((a, b) => b.totalScore - a.totalScore);
+    let rank = 0;
     scores.forEach((s, i, arr) => {
       const prev = arr[i - 1];
-      s.rank = prev && s.totalScore === prev.totalScore ? prev.rank : i + 1;
+      if (!prev || s.totalScore !== prev.totalScore) rank++;
+      s.rank = rank;
     });
 
     scoresCache = { data: scores, timestamp: Date.now() };
