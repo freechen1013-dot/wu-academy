@@ -121,7 +121,10 @@ app.get('/api/scores', async (req, res) => {
     }));
 
     scores.sort((a, b) => b.totalScore - a.totalScore);
-    scores.forEach((s, i) => { s.rank = i + 1; });
+    scores.forEach((s, i, arr) => {
+      const prev = arr[i - 1];
+      s.rank = prev && s.totalScore === prev.totalScore ? prev.rank : i + 1;
+    });
 
     scoresCache = { data: scores, timestamp: Date.now() };
     res.json(scores);

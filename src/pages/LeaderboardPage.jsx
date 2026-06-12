@@ -27,8 +27,22 @@ export default function LeaderboardPage() {
       .catch(() => setLoading(false))
   }, [])
 
-  const studentRanking = [...scores].filter(s => s.studentScore > 0).sort((a, b) => b.studentScore - a.studentScore)
-  const instructorRanking = [...scores].filter(s => s.instructorScore > 0).sort((a, b) => b.instructorScore - a.instructorScore)
+  function withRank(list, key) {
+    return list.map((s, i, arr) => {
+      const prev = arr[i - 1]
+      s.displayRank = prev && s[key] === prev[key] ? prev.displayRank : i + 1
+      return s
+    })
+  }
+
+  const studentRanking = withRank(
+    [...scores].filter(s => s.studentScore > 0).sort((a, b) => b.studentScore - a.studentScore),
+    'studentScore'
+  )
+  const instructorRanking = withRank(
+    [...scores].filter(s => s.instructorScore > 0).sort((a, b) => b.instructorScore - a.instructorScore),
+    'instructorScore'
+  )
   const ranking = tab === 'student' ? studentRanking : instructorRanking
   const maxScore = Math.max(...(ranking.length ? ranking.map(s => tab === 'student' ? s.studentScore : s.instructorScore) : [1]), 1)
 
@@ -77,24 +91,24 @@ export default function LeaderboardPage() {
           <div className="space-y-3">
             {ranking.map((person, idx) => {
               const score = tab === 'student' ? person.studentScore : person.instructorScore
-              const isMedal = idx < 3
+              const r = person.displayRank
               return (
                 <div
                   key={person.name}
                   className={`relative bg-white rounded-2xl p-5 transition-all hover:shadow-md ${
-                    isMedal ? 'shadow-lg ring-2 ring-offset-2 ' + (
-                      idx === 0 ? 'ring-amber-400 shadow-amber-100' :
-                      idx === 1 ? 'ring-gray-300 shadow-gray-100' :
+                    r <= 3 ? 'shadow-lg ring-2 ring-offset-2 ' + (
+                      r === 1 ? 'ring-amber-400 shadow-amber-100' :
+                      r === 2 ? 'ring-gray-300 shadow-gray-100' :
                       'ring-amber-700 shadow-amber-100'
                     ) : 'shadow-sm border border-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex-shrink-0 w-10 text-center">
-                      {isMedal ? (
-                        <span className="text-2xl">{medalIcons[idx]}</span>
+                      {r <= 3 ? (
+                        <span className="text-2xl">{['🥇','🥈','🥉'][r - 1]}</span>
                       ) : (
-                        <span className="text-lg font-bold text-gray-400">#{idx + 1}</span>
+                        <span className="text-lg font-bold text-gray-400">#{r}</span>
                       )}
                     </div>
 
@@ -105,11 +119,11 @@ export default function LeaderboardPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <p className="font-bold text-wu-black truncate">{person.name}</p>
-                        <p className={`font-black text-lg ${idx === 0 ? 'text-amber-500' : idx === 1 ? 'text-gray-500' : idx === 2 ? 'text-amber-800' : 'text-wu-blue'}`}>
+                        <p className={`font-black text-lg ${r === 1 ? 'text-amber-500' : r === 2 ? 'text-gray-500' : r === 3 ? 'text-amber-800' : 'text-wu-blue'}`}>
                           {score}
                         </p>
                       </div>
-                      <ScoreBar value={score} max={maxScore} color={idx === 0 ? 'bg-amber-400' : 'bg-wu-blue'} />
+                      <ScoreBar value={score} max={maxScore} color={r === 1 ? 'bg-amber-400' : 'bg-wu-blue'} />
                       <div className="flex gap-4 mt-1.5 text-xs text-gray-400">
                         <span>學員分 {person.studentScore}</span>
                         <span>講師分 {person.instructorScore}</span>
