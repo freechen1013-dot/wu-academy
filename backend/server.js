@@ -14,6 +14,15 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// SEO headers
+app.use((req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'index, follow');
+  if (req.path.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+  }
+  next();
+});
+
 // Serve static files from dist/
 const DIST_DIR = path.join(__dirname, '..', 'dist');
 app.use(express.static(DIST_DIR));

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wu-academy.onrender.com/sitemap.xml
