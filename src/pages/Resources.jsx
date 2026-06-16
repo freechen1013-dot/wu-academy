@@ -3,10 +3,20 @@ import { useSiteData } from '../contexts/SiteDataContext'
 
 const homeworks = [
   {
-    id: 'critical-thinking',
+    id: 'critical-thinking-1',
     course: 'Critical Thinking in English Reading and Comprehension',
     question: '你認同Harper Lee 所創造的這樣一個「完美的角色」嗎？',
     deadline: '2026-06-12',
+    accent: 'blue',
+    instructor: 'Felix',
+    email: 'freechen1013@gmail.com',
+  },
+  {
+    id: 'critical-thinking-2',
+    course: 'Critical Thinking in English Reading and Comprehension',
+    question: '你認為辯論和argumentative text 在文學世界存在的意義是什麼？為何要學習？',
+    deadline: '2026-06-19',
+    deadlineLabel: '2026-06-19 8:30pm',
     accent: 'blue',
     instructor: 'Felix',
     email: 'freechen1013@gmail.com',
@@ -41,19 +51,19 @@ const accentStyles = {
   },
 }
 
-function getDeadlineInfo(deadline) {
+function getDeadlineInfo(deadline, label) {
   const now = new Date()
   const d = new Date(deadline)
   d.setHours(23, 59, 59, 999)
   const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24))
   if (diff <= 0) return { label: '已到期', urgent: true }
   if (diff <= 3) return { label: `剩 ${diff} 天`, urgent: true }
-  return { label: deadline, urgent: false }
+  return { label: label || deadline, urgent: false }
 }
 
 function HomeworkCard({ hw, onClick }) {
   const styles = accentStyles[hw.accent]
-  const deadline = getDeadlineInfo(hw.deadline)
+  const deadline = getDeadlineInfo(hw.deadline, hw.deadlineLabel)
 
   return (
     <button
