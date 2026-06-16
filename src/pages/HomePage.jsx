@@ -281,7 +281,15 @@ export default function HomePage() {
                   <div className="flex-shrink-0 p-2 bg-wu-yellow/10 rounded-lg text-wu-black">
                     <Icon />
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
+                    {item.link && (
+                      <a href={item.link} className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-wu-blue hover:text-wu-blue/80 transition-colors">
+                        {item.btnText || '前往'}
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </a>
+                    )}
+                  </div>
                 </div>
               )
             })}
@@ -332,7 +340,7 @@ export default function HomePage() {
       </section>
 
       {/* Calendar */}
-      <section className="py-16 md:py-24 bg-gray-50">
+      <section id="calendar" className="py-16 md:py-24 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black text-wu-black mb-2">課程與講師 Calendar</h2>

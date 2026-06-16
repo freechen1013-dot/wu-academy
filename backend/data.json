@@ -37,11 +37,11 @@
   ],
   "courseModel": [
     { "icon": "clock", "text": "8:25 會點名並加分" },
-    { "icon": "users", "text": "學生輪流擔任講師，教學自己有興趣、擅長的內容" },
-    { "icon": "presentation", "text": "每次上課 30 分鐘，一位講師教學 15 分鐘（允許短暫超時 5 分鐘）" },
+    { "icon": "users", "text": "學生輪流擔任講師，教學自己有興趣、擅長的內容", "link": "/instructors.html", "btnText": "去看講師" },
+    { "icon": "presentation", "text": "每次上課 30 分鐘，一位講師教學 15 分鐘（允許短暫超時 5 分鐘）", "link": "#calendar", "btnText": "去看課程" },
     { "icon": "chat", "text": "課程全程開放學生舉手問問題" },
-    { "icon": "question", "text": "課程結束老師以「一問」方式佈置作業" },
-    { "icon": "template", "text": "課程範本會共用給各位，請各位自行複製" }
+    { "icon": "question", "text": "課程結束老師以「一問」方式佈置作業", "link": "/resources.html", "btnText": "去看作業" },
+    { "icon": "template", "text": "課程範本會共用給各位，請各位自行複製", "link": "/resources.html", "btnText": "去複製課程範本" }
   ],
   "timeline2026": [
     { "phase": "期初", "date": "5/29～8/14", "description": "交代今年課程週期、上課時間與行事曆，並認識新同學。" },
