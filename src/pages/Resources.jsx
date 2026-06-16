@@ -237,9 +237,14 @@ export default function Resources() {
           </h3>
           <div className="overflow-x-auto pb-2 -mx-4 px-4">
             <div className="flex gap-4 snap-x snap-mandatory">
-              {homeworks.map(hw => (
+              {homeworks.filter(hw => new Date(hw.deadline) >= new Date(new Date().toDateString())).map(hw => (
                 <HomeworkCard key={hw.id} hw={hw} onClick={() => selectHomework(hw)} />
               ))}
+              {homeworks.filter(hw => new Date(hw.deadline) >= new Date(new Date().toDateString())).length === 0 && (
+                <div className="w-full text-center py-12 text-gray-400 text-sm">
+                  目前無進行中的作業
+                </div>
+              )}
             </div>
           </div>
         </div>
