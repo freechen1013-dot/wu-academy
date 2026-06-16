@@ -259,6 +259,22 @@ export default function Resources() {
           </div>
         </div>
 
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-wu-black mb-5 flex items-center gap-2">
+            <svg className="w-5 h-5 text-wu-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Grading Rubric
+          </h3>
+          <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border-2 border-gray-100">
+            <img
+              src="/assets/grading-rubric.png"
+              alt="Grading Rubric"
+              className="w-full max-w-3xl mx-auto rounded-xl"
+            />
+          </div>
+        </div>
+
         <div className="border-t border-gray-200 pt-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-white rounded-2xl p-8 shadow-sm border-2 border-gray-100">
