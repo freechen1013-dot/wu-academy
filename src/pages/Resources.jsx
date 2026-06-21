@@ -30,6 +30,16 @@ const homeworks = [
     instructor: 'August',
     email: null,
   },
+  {
+    id: 'f1-tech',
+    course: 'F1車輛的科技原理',
+    question: '你們認為F1未來會做出什麼樣的改變？油電比會做出什麼樣的改變嗎？',
+    deadline: '2026-06-26',
+    deadlineLabel: '6/26 上課前',
+    accent: 'violet',
+    instructor: 'Andy',
+    email: null,
+  },
 ]
 
 const accentStyles = {
@@ -48,6 +58,14 @@ const accentStyles = {
     text: 'text-emerald-500',
     ring: 'ring-emerald-400/40',
     from: 'from-emerald-400',
+  },
+  violet: {
+    border: 'border-violet-500/30',
+    bg: 'bg-violet-500/10',
+    dot: 'bg-violet-500',
+    text: 'text-violet-600',
+    ring: 'ring-violet-500/40',
+    from: 'from-violet-500',
   },
 }
 

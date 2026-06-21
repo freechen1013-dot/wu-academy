@@ -81,8 +81,8 @@ function Calendar({ calendarData }) {
     sessionMap[day].push(s)
   })
 
-  const instructorColors = { Felix: 'bg-wu-blue', August: 'bg-emerald-400' }
-  const instructorPanelColors = { Felix: 'bg-wu-blue/10', August: 'bg-emerald-400/10' }
+  const instructorColors = { Felix: 'bg-wu-blue', August: 'bg-emerald-400', Andy: 'bg-violet-500' }
+  const instructorPanelColors = { Felix: 'bg-wu-blue/10', August: 'bg-emerald-400/10', Andy: 'bg-violet-500/10' }
   const getInstructorColor = (name) => instructorColors[name] || 'bg-wu-blue'
   const getPanelColor = (name) => instructorPanelColors[name] || 'bg-wu-blue/10'
 
