@@ -22,6 +22,16 @@ const homeworks = [
     email: 'freechen1013@gmail.com',
   },
   {
+    id: 'critical-thinking-3',
+    course: 'Critical Thinking in English Reading and Comprehension',
+    question: '各位認為「說」與「寫」最大的不同是什麼？',
+    deadline: '2026-06-26',
+    deadlineLabel: '6/26 上課前',
+    accent: 'blue',
+    instructor: 'Felix',
+    email: 'freechen1013@gmail.com',
+  },
+  {
     id: 'tech-knowledge',
     course: '科技新知課',
     question: '未來可能會誕生什麼樣的科技或發明？他們大概會以什麼形式出現？',
