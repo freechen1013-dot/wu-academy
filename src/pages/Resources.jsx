@@ -430,7 +430,7 @@ export default function Resources() {
             </svg>
             課程影片
           </h3>
-          <div className="text-center py-12 text-gray-400 text-sm bg-white rounded-2xl border-2 border-dashed border-gray-200">
+          <div className="text-center py-12 text-gray-400 text-sm">
             目前無近期課程影片
           </div>
         </div>
