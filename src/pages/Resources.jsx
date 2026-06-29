@@ -52,6 +52,19 @@ const homeworks = [
   },
 ]
 
+const videos = [
+  {
+    id: 'video-1',
+    course: '科技新知課',
+    title: 'AI 未來發展趨勢',
+    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    description: '探討人工智慧在未來十年的發展方向與應用場景',
+    accent: 'green',
+    instructor: 'August',
+    email: null,
+  },
+]
+
 const accentStyles = {
   blue: {
     border: 'border-wu-blue/30',
@@ -183,6 +196,94 @@ function SubmissionView({ hw, answer, setAnswer, onSubmit, onBack }) {
   )
 }
 
+function VideoCard({ video, onClick }) {
+  const styles = accentStyles[video.accent]
+  return (
+    <button
+      onClick={onClick}
+      className={`flex-shrink-0 w-[280px] md:w-[360px] snap-start bg-white rounded-2xl shadow-sm border-2 text-left transition-all hover:shadow-md hover:-translate-y-1 ${styles.border}`}
+    >
+      <div className={`h-32 rounded-t-2xl ${styles.bg} flex items-center justify-center`}>
+        <svg className="w-12 h-12 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </div>
+      <div className="p-4">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className={`w-2 h-2 rounded-full ${styles.dot}`} />
+          <span className={`text-xs font-bold ${styles.text}`}>{video.course}</span>
+        </div>
+        <p className="text-sm font-bold text-wu-black line-clamp-2">{video.title}</p>
+        {video.description && (
+          <p className="text-xs text-gray-400 mt-1 line-clamp-1">{video.description}</p>
+        )}
+      </div>
+    </button>
+  )
+}
+
+function VideoView({ video, message, setMessage, onSubmit, onBack }) {
+  const styles = accentStyles[video.accent]
+  const canSubmit = message.trim().length > 0
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <button onClick={onBack} className="flex items-center gap-1.5 text-gray-500 hover:text-wu-black transition-colors mb-6 group">
+        <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        <span className="text-sm font-medium">返回成員資源專區</span>
+      </button>
+
+      <div className={`p-1 rounded-2xl bg-gradient-to-r ${styles.from} to-transparent`}>
+        <div className="bg-white rounded-xl overflow-hidden">
+          <div className="aspect-video">
+            <iframe
+              src={video.url}
+              title={video.title}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+          <div className="p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`w-2.5 h-2.5 rounded-full ${styles.dot}`} />
+              <span className={`text-xs font-bold ${styles.text}`}>{video.course}</span>
+            </div>
+            <h2 className="text-xl md:text-2xl font-black text-wu-black mb-2">{video.title}</h2>
+            {video.description && (
+              <p className="text-sm text-gray-600 mb-6">{video.description}</p>
+            )}
+
+            <div className="border-t border-gray-100 pt-6">
+              <p className="text-sm font-medium text-gray-500 mb-3">💬 有問題想問講師？</p>
+              <textarea
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="輸入你想問的問題..."
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-wu-blue focus:ring-2 focus:ring-wu-blue/20 outline-none resize-vertical text-sm leading-relaxed transition-all"
+              />
+              <button
+                onClick={onSubmit}
+                disabled={!canSubmit}
+                className={`w-full mt-3 py-3 rounded-xl font-bold text-sm transition-all ${
+                  canSubmit
+                    ? 'bg-wu-blue text-white shadow-lg shadow-wu-blue/30 hover:bg-wu-blue/90 cursor-pointer'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                發送問題
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Modal({ message, onContinue, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -214,6 +315,10 @@ export default function Resources() {
   const [answer, setAnswer] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [pendingHw, setPendingHw] = useState(null)
+  const [selectedVideo, setSelectedVideo] = useState(null)
+  const [videoMessage, setVideoMessage] = useState('')
+  const [showVideoModal, setShowVideoModal] = useState(false)
+  const [pendingVideo, setPendingVideo] = useState(null)
 
   function handleSubmit() {
     if (!selected || !answer.trim()) return
@@ -241,8 +346,43 @@ export default function Resources() {
     setPendingHw(null)
   }
 
+  function handleVideoSubmit() {
+    if (!selectedVideo || !videoMessage.trim()) return
+    if (selectedVideo.email) {
+      const subject = `課程問題 - ${selectedVideo.course}`
+      const body = `課程：${selectedVideo.title}\n\n問題：\n${videoMessage}`
+      window.location.href = `mailto:${selectedVideo.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    } else {
+      setPendingVideo(selectedVideo)
+      setShowVideoModal(true)
+    }
+  }
+
+  function handleVideoModalContinue() {
+    setShowVideoModal(false)
+    if (pendingVideo) {
+      const subject = `課程問題（代轉 - ${pendingVideo.instructor}）`
+      const body = `以下為 ${pendingVideo.instructor} 講師之學員問題\n\n課程：${pendingVideo.title}\n\n問題：\n${videoMessage}`
+      window.location.href = `mailto:freechen1013@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    }
+  }
+
+  function handleVideoModalCancel() {
+    setShowVideoModal(false)
+    setPendingVideo(null)
+  }
+
   function selectHomework(hw) {
     setSelected(hw)
+    setAnswer('')
+    setSelectedVideo(null)
+    setVideoMessage('')
+  }
+
+  function selectVideo(video) {
+    setSelectedVideo(video)
+    setVideoMessage('')
+    setSelected(null)
     setAnswer('')
   }
 
@@ -258,6 +398,15 @@ export default function Resources() {
     )
   }
 
+  if (selectedVideo) {
+    return (
+      <section className="min-h-screen py-16 md:py-24 bg-gray-50">
+        <VideoView video={selectedVideo} message={videoMessage} setMessage={setVideoMessage} onSubmit={handleVideoSubmit} onBack={() => setSelectedVideo(null)} />
+        {showVideoModal && <Modal message="該講師尚未以gmail綁定此系統，將會透過院長傳達問題" onContinue={handleVideoModalContinue} onCancel={handleVideoModalCancel} />}
+      </section>
+    )
+  }
+
   return (
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -265,6 +414,25 @@ export default function Resources() {
           <h2 className="text-3xl md:text-4xl font-black text-wu-black mb-2">成員資源專區</h2>
           <p className="text-gray-500">Member Resources</p>
         </div>
+
+        {videos.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-wu-black mb-5 flex items-center gap-2">
+            <svg className="w-5 h-5 text-wu-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            課程影片
+          </h3>
+          <div className="overflow-x-auto pb-2 -mx-4 px-4">
+            <div className="flex gap-4 snap-x snap-mandatory">
+              {videos.map(v => (
+                <VideoCard key={v.id} video={v} onClick={() => selectVideo(v)} />
+              ))}
+            </div>
+          </div>
+        </div>
+        )}
 
         <div className="mb-12">
           <h3 className="text-xl font-bold text-wu-black mb-5 flex items-center gap-2">
