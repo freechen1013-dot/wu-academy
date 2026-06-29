@@ -32,8 +32,7 @@ export default function LeaderboardPage() {
     return list.map((s, i, arr) => {
       const prev = arr[i - 1]
       if (!prev || s[key] !== prev[key]) rank = rank + 1
-      s.displayRank = rank
-      return s
+      return { ...s, displayRank: rank }
     })
   }
 
