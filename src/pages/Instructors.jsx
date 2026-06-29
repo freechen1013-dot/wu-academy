@@ -1,5 +1,11 @@
 import { useSiteData } from '../contexts/SiteDataContext'
 
+const accentStyles = {
+  blue: { bg: 'bg-wu-blue', text: 'text-wu-blue', badge: 'bg-wu-blue/10 text-wu-blue', slant: 'bg-wu-blue' },
+  green: { bg: 'bg-emerald-400', text: 'text-emerald-500', badge: 'bg-emerald-400/10 text-emerald-500', slant: 'bg-emerald-400' },
+  violet: { bg: 'bg-violet-500', text: 'text-violet-600', badge: 'bg-violet-500/10 text-violet-600', slant: 'bg-violet-500' },
+}
+
 export default function Instructors() {
   const { isLoading, error, instructors } = useSiteData()
 
@@ -15,9 +21,11 @@ export default function Instructors() {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            {(instructors || []).map((instructor, idx) => (
+            {(instructors || []).map((instructor, idx) => {
+              const s = accentStyles[instructor.accent] || accentStyles.blue
+              return (
               <div key={idx} className="relative bg-white rounded-2xl border-2 border-gray-100 overflow-hidden hover:shadow-xl transition-shadow group">
-                <div className="absolute top-0 left-0 w-24 h-full bg-wu-blue slant-decoration opacity-90" />
+                <div className={`absolute top-0 left-0 w-24 h-full ${s.slant} slant-decoration opacity-90`} />
                 
                 <div className="relative p-8 md:p-10 flex flex-col md:flex-row gap-6 items-center md:items-start">
                   <div className="flex-shrink-0">
@@ -36,16 +44,17 @@ export default function Instructors() {
                     </div>
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <div className="inline-block px-3 py-1 bg-wu-blue/10 text-wu-blue text-xs font-bold rounded-full mb-3">
+                    <div className={`inline-block px-3 py-1 ${s.badge} text-xs font-bold rounded-full mb-3`}>
                       {instructor.role}
                     </div>
                     <h3 className="text-2xl font-black text-wu-black mb-2">{instructor.name}</h3>
-                    <p className="text-wu-blue font-medium mb-3">{instructor.subject}</p>
+                    <p className={`${s.text} font-medium mb-3`}>{instructor.subject}</p>
                     <p className="text-gray-600 text-sm leading-relaxed">{instructor.description}</p>
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-12 text-center">

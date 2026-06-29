@@ -73,7 +73,8 @@
       "subject": "Critical Thinking in English Reading and Comprehension",
       "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work",
       "sessions": "",
-      "avatar": "/assets/felix-profile.JPEG"
+      "avatar": "/assets/felix-profile.JPEG",
+      "accent": "blue"
     },
     {
       "name": "August",
@@ -81,7 +82,8 @@
       "subject": "科技新知",
       "description": "",
       "sessions": "",
-      "avatar": ""
+      "avatar": "",
+      "accent": "green"
     },
     {
       "name": "Andy",
@@ -89,7 +91,8 @@
       "subject": "F1車輛的科技原理",
       "description": "",
       "sessions": "",
-      "avatar": ""
+      "avatar": "",
+      "accent": "violet"
     }
   ],
   "project": {
