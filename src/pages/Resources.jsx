@@ -52,18 +52,7 @@ const homeworks = [
   },
 ]
 
-const videos = [
-  {
-    id: 'video-1',
-    course: '科技新知課',
-    title: 'AI 未來發展趨勢',
-    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    description: '探討人工智慧在未來十年的發展方向與應用場景',
-    accent: 'green',
-    instructor: 'August',
-    email: null,
-  },
-]
+const videos = []
 
 const accentStyles = {
   blue: {
