@@ -61,7 +61,9 @@
       { "date": "2026-06-05", "time": "8:30-8:45", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
       { "date": "2026-06-12", "time": "8:30-8:45", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
       { "date": "2026-06-05", "time": "8:45-9:00pm", "course": "科技新知課", "instructor": "August", "description": "帶同學們認識近期的最新科技" },
-      { "date": "2026-06-19", "time": "8:30-8:45", "course": "F1車輛的科技原理", "instructor": "Andy", "description": "F1賽車的科技發展與工程原理" }
+      { "date": "2026-06-19", "time": "8:30-8:45", "course": "F1車輛的科技原理", "instructor": "Andy", "description": "F1賽車的科技發展與工程原理" },
+      { "date": "2026-07-03", "time": "8:30-8:45", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" },
+      { "date": "2026-07-10", "time": "8:30-8:45", "course": "Critical Thinking in English Reading and Comprehension", "instructor": "Felix", "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work" }
     ]
   },
   "instructors": [

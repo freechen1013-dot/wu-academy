@@ -25,8 +25,8 @@ const homeworks = [
     id: 'critical-thinking-3',
     course: 'Critical Thinking in English Reading and Comprehension',
     question: '各位認為「說」與「寫」最大的不同是什麼？',
-    deadline: '2026-07-03',
-    deadlineLabel: '7/3 上課前',
+    deadline: '2026-07-03T20:30:00',
+    deadlineLabel: '7/3 上課前（8:30pm）',
     accent: 'blue',
     instructor: 'Felix',
     email: 'freechen1013@gmail.com',
@@ -275,10 +275,20 @@ export default function Resources() {
           </h3>
           <div className="overflow-x-auto pb-2 -mx-4 px-4">
             <div className="flex gap-4 snap-x snap-mandatory">
-              {homeworks.filter(hw => new Date(hw.deadline) >= new Date(new Date().toDateString())).map(hw => (
+              {homeworks.filter(hw => {
+                const d = new Date(hw.deadline)
+                const now = new Date()
+                if (hw.deadline && hw.deadline.includes('T')) return d > now
+                return d >= new Date(now.toDateString())
+              }).map(hw => (
                 <HomeworkCard key={hw.id} hw={hw} onClick={() => selectHomework(hw)} />
               ))}
-              {homeworks.filter(hw => new Date(hw.deadline) >= new Date(new Date().toDateString())).length === 0 && (
+              {homeworks.filter(hw => {
+                const d = new Date(hw.deadline)
+                const now = new Date()
+                if (hw.deadline && hw.deadline.includes('T')) return d > now
+                return d >= new Date(now.toDateString())
+              }).length === 0 && (
                 <div className="w-full text-center py-12 text-gray-400 text-sm">
                   目前無進行中的作業
                 </div>
