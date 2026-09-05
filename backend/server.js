@@ -97,12 +97,16 @@ app.get('/api/health', (req, res) => {
 // Google Sheets 積分資料
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/10NhNqFPifLKOxVr14cWWDYvlyH3YXa7euTTDTr25dkY/gviz/tq?tqx=out:csv';
 let scoresCache = { data: null, timestamp: 0 };
-const CACHE_TTL = 30000; // 30 秒快取
+const CACHE_TTL = 10000; // 10 秒快取
 
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+  const headers = lines[0].split(',').map((h, i) => {
+    const header = h.replace(/"/g, '').trim();
+    // The score sheet's first header is blank, but that column contains names.
+    return header || (i === 0 ? '成員' : `column${i + 1}`);
+  });
   return lines.slice(1).map(line => {
     const values = line.split(',').map(v => v.replace(/"/g, '').trim());
     const row = {};
@@ -121,13 +125,20 @@ app.get('/api/scores', async (req, res) => {
     const csv = await response.text();
     const rows = parseCSV(csv);
 
-    const scores = rows.map((r, i) => ({
-      rank: 0,
-      name: r['成員'] || '',
-      studentScore: parseInt(r['學員分']) || 0,
-      instructorScore: parseInt(r['講師分']) || 0,
-      totalScore: (parseInt(r['學員分']) || 0) + (parseInt(r['講師分']) || 0),
-    }));
+    const scores = rows
+      .filter(r => r['成員'] && (r['學員分'] !== '' || r['講師分'] !== ''))
+      .map(r => {
+        const studentScore = Number.parseInt(r['學員分'], 10) || 0;
+        const instructorScore = Number.parseInt(r['講師分'], 10) || 0;
+
+        return {
+          rank: 0,
+          name: r['成員'],
+          studentScore,
+          instructorScore,
+          totalScore: studentScore + instructorScore,
+        };
+      });
 
     scores.sort((a, b) => b.totalScore - a.totalScore);
     let rank = 0;
@@ -169,7 +180,7 @@ app.listen(PORT, () => {
   - POST http://localhost:${PORT}/api/content      (更新全站資料)
   
   資料檔案: backend/data.json
-  試算表: Google Sheets (30s 快取)
+  試算表: Google Sheets (10s 快取)
   
   伺服器運行中... 🚀
   `);

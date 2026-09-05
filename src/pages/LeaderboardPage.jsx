@@ -21,10 +21,28 @@ export default function LeaderboardPage() {
   const [tab, setTab] = useState('student')
 
   useEffect(() => {
-    fetch('/api/scores')
-      .then(r => r.json())
-      .then(d => { setScores(d); setLoading(false) })
-      .catch(() => setLoading(false))
+    let isMounted = true
+
+    async function loadScores() {
+      try {
+        const response = await fetch('/api/scores')
+        if (!response.ok) throw new Error('Failed to fetch scores')
+        const data = await response.json()
+        if (isMounted) setScores(data)
+      } catch {
+        // Keep the last successful ranking visible while the next poll retries.
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadScores()
+    const intervalId = window.setInterval(loadScores, 10_000)
+
+    return () => {
+      isMounted = false
+      window.clearInterval(intervalId)
+    }
   }, [])
 
   function withRank(list, key) {
