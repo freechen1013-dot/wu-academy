@@ -18,7 +18,8 @@ app.use(express.json());
 app.use((req, res, next) => {
   res.setHeader('X-Robots-Tag', 'index, follow');
   if (req.path.endsWith('.html')) {
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    // Always revalidate page HTML so deployments are visible immediately.
+    res.setHeader('Cache-Control', 'no-cache');
   }
   next();
 });
