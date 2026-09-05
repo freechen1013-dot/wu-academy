@@ -10,7 +10,7 @@
   "stats": {
     "admin": 1,
     "students": 5,
-    "instructors": 2
+    "instructors": 6
   },
   "coreValues": [
     {
@@ -70,8 +70,8 @@
     {
       "name": "Felix（陳孚瑞）",
       "role": "院長 / 無院講師",
-      "subject": "Critical Thinking in English Reading and Comprehension",
-      "description": "Training the skill of critical thinking and analysis when coming across a piece of literary work",
+      "subject": "可教學方向：英文、音樂、AI 與電腦科技、數學、國文與歷史",
+      "description": "目前就讀復興實驗高級中學雙語部，同時也是學生創作歌手，在 Spotify 上擁有一張音樂專輯，也是 AI 使用者。",
       "sessions": "",
       "avatar": "/assets/felix-profile.JPEG",
       "accent": "blue"
@@ -79,8 +79,26 @@
     {
       "name": "August",
       "role": "無院講師",
-      "subject": "科技新知",
-      "description": "",
+      "subject": "可教學方向：AI 與科技應用",
+      "description": "就讀於華砇國際數位實驗教育機構，深度鑽研 AI 與科技。",
+      "sessions": "",
+      "avatar": "",
+      "accent": "green"
+    },
+    {
+      "name": "Mars",
+      "role": "無院講師",
+      "subject": "可教學方向：數學、體育",
+      "description": "就讀於華砇國際數位實驗教育機構，主要鑽研數學與體育領域。",
+      "sessions": "",
+      "avatar": "",
+      "accent": "violet"
+    },
+    {
+      "name": "Marco",
+      "role": "無院講師",
+      "subject": "可教學方向：報告製作、人際活動",
+      "description": "就讀於華砇國際數位實驗教育機構，主要專注於人際溝通與報告製作等多元技能的發展。",
       "sessions": "",
       "avatar": "",
       "accent": "green"
@@ -88,11 +106,20 @@
     {
       "name": "Andy",
       "role": "無院講師",
-      "subject": "F1車輛的科技原理",
-      "description": "",
+      "subject": "可教學方向：賽車與空氣動力學、體育",
+      "description": "就讀於康橋國際學校，對一級方程式賽車和排球進行研究。",
       "sessions": "",
       "avatar": "",
       "accent": "violet"
+    },
+    {
+      "name": "Angela",
+      "role": "無院講師",
+      "subject": "可教學方向：待定",
+      "description": "就讀於復興實驗高級中學雙語部。",
+      "sessions": "",
+      "avatar": "",
+      "accent": "blue"
     }
   ],
   "project": {
