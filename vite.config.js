@@ -22,6 +22,8 @@ export default defineConfig({
         resources: resolve(__dirname, 'resources.html'),
         contact: resolve(__dirname, 'contact.html'),
         leaderboard: resolve(__dirname, 'leaderboard.html'),
+        companion: resolve(__dirname, 'companion.html'),
+        review: resolve(__dirname, 'review.html'),
       },
     },
   },

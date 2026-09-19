@@ -3,6 +3,8 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import process from 'node:process';
+import { createPartnerProjectRouter } from './partnerProject.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +15,13 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/partner-project', createPartnerProjectRouter());
+app.use((error, req, res, next) => {
+  if (req.path.startsWith('/api/partner-project') && error?.name === 'MulterError') {
+    return res.status(400).json({ error: 'Files must be JPG, PNG, WebP, MP4, MOV, or PDF; maximum 5 files and 150MB total' });
+  }
+  return next(error);
+});
 
 // SEO headers
 app.use((req, res, next) => {
@@ -44,7 +53,7 @@ app.get('/api/content', (req, res) => {
   try {
     const data = loadData();
     res.json(data);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to load content' });
   }
 });
@@ -60,7 +69,7 @@ app.get('/api/content/:section', (req, res) => {
     }
     
     res.json(data[section]);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to load section' });
   }
 });
@@ -75,7 +84,7 @@ app.put('/api/content/:section', (req, res) => {
     saveData(data);
     
     res.json({ success: true, message: `${section} updated` });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to update section' });
   }
 });
@@ -85,7 +94,7 @@ app.post('/api/content', (req, res) => {
   try {
     saveData(req.body);
     res.json({ success: true, message: 'Content updated' });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to update content' });
   }
 });
@@ -151,7 +160,7 @@ app.get('/api/scores', async (req, res) => {
 
     scoresCache = { data: scores, timestamp: Date.now() };
     res.json(scores);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch scores' });
   }
 });
