@@ -103,7 +103,8 @@ function storagePath(path) {
 
 function supabaseRequest(path, options = {}) {
   const url = `${requiredEnv('SUPABASE_URL').replace(/\/$/, '')}${path}`;
-  const apiKey = requiredEnv('SUPABASE_SERVICE_ROLE_KEY');
+  // Secret API keys use a URL-safe alphabet, so whitespace can only be a paste artifact.
+  const apiKey = requiredEnv('SUPABASE_SERVICE_ROLE_KEY').replace(/\s+/g, '');
   return fetch(url, {
     ...options,
     headers: {
