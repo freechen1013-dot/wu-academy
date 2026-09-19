@@ -103,11 +103,13 @@ function storagePath(path) {
 
 function supabaseRequest(path, options = {}) {
   const url = `${requiredEnv('SUPABASE_URL').replace(/\/$/, '')}${path}`;
+  const apiKey = requiredEnv('SUPABASE_SERVICE_ROLE_KEY');
   return fetch(url, {
     ...options,
     headers: {
-      apikey: requiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
-      Authorization: `Bearer ${requiredEnv('SUPABASE_SERVICE_ROLE_KEY')}`,
+      apikey: apiKey,
+      // New Supabase secret keys are not JWTs and must not be sent as Bearer tokens.
+      ...(apiKey.startsWith('sb_') ? {} : { Authorization: `Bearer ${apiKey}` }),
       ...options.headers,
     },
   });
