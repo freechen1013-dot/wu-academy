@@ -87,7 +87,7 @@ function CoLearningCloudBoard({ outcomes }) {
           拖曳雲端，探索每一位學伴的共學足跡
           <br /><span className="text-wu-yellow">點擊雲朵，閱讀完整分享</span>
         </div>
-        <div className="absolute left-1/2 top-1/2 h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:h-[42rem] sm:w-[68rem]" style={{ transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px))` }}>
+        <div className="absolute inset-0" style={{ transform: `translate(${pan.x}px, ${pan.y}px)` }}>
           {outcomes.map((outcome, index) => {
             const angle = index * 2.4 - Math.PI / 2
             const distance = index === 0 ? 0 : 24 + (index % 3) * 8
