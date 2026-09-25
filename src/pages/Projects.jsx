@@ -89,8 +89,10 @@ function CoLearningCloudBoard({ outcomes }) {
         </div>
         <div className="absolute left-1/2 top-1/2 h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:h-[42rem] sm:w-[68rem]" style={{ transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px))` }}>
           {outcomes.map((outcome, index) => {
-            const x = 8 + ((index * 37) % 78)
-            const y = 15 + ((index * 29) % 65)
+            const angle = index * 2.4 - Math.PI / 2
+            const distance = index === 0 ? 0 : 24 + (index % 3) * 8
+            const x = 50 + Math.cos(angle) * distance
+            const y = 50 + Math.sin(angle) * distance * 0.72
             const large = index % 3 === 0
             return (
               <button
@@ -106,7 +108,7 @@ function CoLearningCloudBoard({ outcomes }) {
                   <span className="absolute -right-2 top-3 h-6 w-8 rounded-full border-2 border-wu-black bg-white" />
                   <span className="relative block text-xs font-black tracking-wider text-wu-blue">學伴共學</span>
                   <span className="relative mt-1 block truncate text-lg font-black text-wu-black">{outcome.nickname || '匿名學伴'}</span>
-                  <span className="relative mt-2 block truncate text-xs font-bold text-gray-500">{outcome.weekId ? `第 ${outcome.weekId} 週` : '點擊閱讀'}</span>
+                  <span className="relative mt-2 block truncate text-xs font-bold text-gray-500">點擊閱讀完整分享</span>
                 </span>
               </button>
             )
