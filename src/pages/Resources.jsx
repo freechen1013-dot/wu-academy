@@ -1,17 +1,7 @@
 import { useState } from 'react'
 import { useSiteData } from '../contexts/SiteDataContext'
 
-const homeworks = [
-  {
-    id: 'math-is-everything-test',
-    course: 'Math is Everything',
-    question: 'test',
-    deadline: '2026-10-11',
-    accent: 'violet',
-    instructor: 'Mars',
-    email: null,
-  },
-]
+const homeworks = []
 
 const videos = []
 

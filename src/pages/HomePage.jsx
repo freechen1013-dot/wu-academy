@@ -192,6 +192,13 @@ export default function HomePage() {
     )
   }
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const upcomingSessions = (calendar?.sessions || [])
+    .filter((session) => new Date(`${session.date}T00:00:00`) >= today)
+    .sort((left, right) => left.date.localeCompare(right.date))
+    .slice(0, 3)
+
   return (
     <>
       {/* Hero Section */}
@@ -355,7 +362,7 @@ export default function HomePage() {
                   即將到來的課程
                 </h3>
                 <div className="space-y-3">
-                  {(calendar?.sessions || []).slice(0, 3).map((s, idx) => (
+                  {upcomingSessions.map((s, idx) => (
                     <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <div className="text-center min-w-[60px]">
                         <p className="text-xs text-gray-400">{new Date(s.date).getMonth() + 1}月</p>
