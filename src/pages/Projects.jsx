@@ -100,6 +100,7 @@ function CoLearningCloudBoard({ outcomes }) {
                 type="button"
                 className={`group absolute -translate-x-1/2 -translate-y-1/2 text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-wu-yellow ${large ? 'w-40 sm:w-52' : 'w-32 sm:w-40'}`}
                 style={{ left: `${x}%`, top: `${y}%` }}
+                onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => { if (!dragged.current) setActiveOutcome(outcome) }}
                 aria-label={`閱讀 ${outcome.nickname || '學伴'} 的共學分享`}
               >
