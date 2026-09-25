@@ -152,6 +152,22 @@ async function signedAttachments(attachments = []) {
   }));
 }
 
+async function attachSignedMedia(submissions) {
+  const submissionIds = submissions.map((submission) => submission.id);
+  if (!submissionIds.length) return [];
+  const attachments = await rest(`submission_attachments?submission_id=in.(${submissionIds.join(',')})&select=id,submission_id,storage_path,file_name,content_type,file_size`);
+  const bySubmission = new Map();
+  attachments.forEach((attachment) => {
+    const list = bySubmission.get(attachment.submission_id) || [];
+    list.push(attachment);
+    bySubmission.set(attachment.submission_id, list);
+  });
+  return Promise.all(submissions.map(async (submission) => ({
+    ...submission,
+    attachments: await signedAttachments(bySubmission.get(submission.id)),
+  })));
+}
+
 async function sendNotification(subject, text, lecturerEmail) {
   if (!process.env.SMTP_HOST || !process.env.SMTP_FROM) return;
   const recipients = [process.env.PARTNER_NOTIFICATION_EMAIL, lecturerEmail].filter(Boolean);
@@ -212,9 +228,9 @@ export function createPartnerProjectRouter() {
     try {
       const [weeks, submissions] = await Promise.all([
         rest('project_weeks?status=in.(active,closed)&order=week_number.asc'),
-        rest('project_submissions?status=eq.approved&select=id,week_id,nickname,response,feedback,created_at,submission_attachments(id,storage_path,file_name,content_type,file_size)&order=created_at.desc'),
+        rest('project_submissions?status=eq.approved&select=id,week_id,nickname,response,feedback,created_at&order=created_at.desc'),
       ]);
-      const outcomes = await Promise.all(submissions.map(async (submission) => ({
+      const outcomes = (await attachSignedMedia(submissions)).map((submission) => ({
         id: submission.id,
         weekId: submission.week_id,
         nickname: submission.nickname,
@@ -222,8 +238,8 @@ export function createPartnerProjectRouter() {
         feedback: submission.feedback,
         approved: true,
         createdAt: submission.created_at,
-        attachments: await signedAttachments(submission.submission_attachments),
-      })));
+        attachments: submission.attachments,
+      }));
       const mappedWeeks = weeks.map((week) => ({
         id: week.id, weekNumber: week.week_number, title: week.title_zh, titleEn: week.title_en,
         question: week.question_zh, questionEn: week.question_en, materials: week.materials, status: week.status,
@@ -239,17 +255,13 @@ export function createPartnerProjectRouter() {
     try {
       const [weeks, submissions] = await Promise.all([
         rest('project_weeks?select=id,week_number,title_zh,assigned_instructor,status&order=week_number.asc'),
-        rest('project_submissions?select=id,week_id,nickname,response,status,consented_at,review_note,feedback,created_at,submission_attachments(id,storage_path,file_name,content_type,file_size)&order=created_at.asc'),
+        rest('project_submissions?select=id,week_id,nickname,response,status,consented_at,review_note,feedback,created_at&order=created_at.asc'),
       ]);
       const allowedWeeks = req.partnerSession.role === 'director'
         ? weeks
         : weeks.filter((week) => [req.partnerSession.name, req.partnerSession.email].includes(week.assigned_instructor));
       const allowedIds = new Set(allowedWeeks.map((week) => week.id));
-      const queue = await Promise.all(submissions.filter((submission) => allowedIds.has(submission.week_id)).map(async (submission) => ({
-        ...submission,
-        attachments: await signedAttachments(submission.submission_attachments),
-        submission_attachments: undefined,
-      })));
+      const queue = await attachSignedMedia(submissions.filter((submission) => allowedIds.has(submission.week_id)));
       res.json({ weeks: allowedWeeks, submissions: queue });
     } catch (error) {
       console.error('Unable to load review queue', error);
