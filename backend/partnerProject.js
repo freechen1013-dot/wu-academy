@@ -119,7 +119,9 @@ function supabaseRequest(path, options = {}) {
 async function rest(path, options = {}) {
   const response = await supabaseRequest(`/rest/v1/${path}`, options);
   if (!response.ok) throw new Error(`Supabase request failed (${response.status}): ${await response.text()}`);
-  return response.status === 204 ? null : response.json();
+  if (response.status === 204) return null;
+  const body = await response.text();
+  return body ? JSON.parse(body) : null;
 }
 
 async function insertEvent(submissionId, actor, eventType, note = null) {
@@ -289,10 +291,13 @@ export function createPartnerProjectRouter() {
       const weeks = await rest(`project_weeks?id=eq.${encodeURIComponent(weekId)}&status=eq.active&select=id,week_number,assigned_instructor`);
       if (!weeks.length) return apiError(res, 409, 'This week is not accepting submissions');
       const editCode = crypto.randomBytes(18).toString('base64url');
-      const [submission] = await rest('project_submissions', {
+      await rest('project_submissions', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Prefer: 'return=representation' },
         body: JSON.stringify({ week_id: weekId, nickname, response, consented_at: new Date().toISOString(), submission_code_hash: submissionCodeHash(editCode) }),
       });
+      const createdSubmissions = await rest(`project_submissions?week_id=eq.${encodeURIComponent(weekId)}&nickname=eq.${encodeURIComponent(nickname)}&select=id`);
+      const submission = createdSubmissions?.[0];
+      if (!submission) throw new Error('Submission was created but could not be retrieved');
       const storedPaths = [];
       try {
         const attachments = [];
