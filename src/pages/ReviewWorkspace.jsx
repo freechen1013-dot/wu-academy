@@ -14,35 +14,6 @@ async function request(path, options = {}) {
   return response.status === 204 ? null : response.json();
 }
 
-function Attachment({ attachment }) {
-  const isImage = attachment.contentType?.startsWith("image/");
-  const isVideo = attachment.contentType?.startsWith("video/");
-  return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden bg-white">
-      {isImage && (
-        <img
-          src={attachment.url}
-          alt={attachment.fileName}
-          className="w-full max-h-72 object-contain bg-gray-100"
-        />
-      )}
-      {isVideo && (
-        <video controls preload="metadata" className="w-full max-h-72 bg-black">
-          <source src={attachment.url} type={attachment.contentType} />
-        </video>
-      )}
-      <a
-        href={attachment.url}
-        target="_blank"
-        rel="noreferrer"
-        className="block p-3 text-sm font-bold text-wu-blue underline break-all"
-      >
-        {attachment.fileName}
-      </a>
-    </div>
-  );
-}
-
 function statusLabel(status) {
   return (
     {
@@ -233,22 +204,6 @@ export default function ReviewWorkspace() {
                       <p className="mt-6 whitespace-pre-wrap leading-7 text-gray-700">
                         {submission.response}
                       </p>
-                      {submission.attachments?.length > 0 && (
-                        <div className="mt-6">
-                          <h3 className="font-bold mb-3">附件預覽</h3>
-                          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {submission.attachments.map((attachment) => (
-                              <Attachment
-                                key={attachment.id}
-                                attachment={attachment}
-                              />
-                            ))}
-                          </div>
-                          <p className="text-xs text-gray-400 mt-2">
-                            連結為短效簽名網址，逾時請重新整理佇列。
-                          </p>
-                        </div>
-                      )}
                       {submission.review_note && (
                         <p className="mt-5 bg-yellow-50 p-3 rounded-lg text-sm">
                           審閱原因：{submission.review_note}

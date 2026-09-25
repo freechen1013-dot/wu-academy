@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 
 const api = "/api/partner-project";
-const MAX_FILES = 5;
-const MAX_BYTES = 150 * 1024 * 1024;
-const allowedTypes = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "video/mp4",
-  "video/quicktime",
-  "application/pdf",
-];
 const consentText =
   "本內容將會在審核通過後永久於本學院官網刊登，可能被任何造訪此網頁的人瀏覽。勾選此欄表示同意公開您輸入與上傳的所有內容。另外，若您的回答包含不當之內容，審核該題目的講師有權阻止此內容的上架。";
 
@@ -38,7 +28,6 @@ export default function CompanionWorkspace() {
     nickname: "",
     response: "",
     consent: false,
-    files: [],
   });
   const [edit, setEdit] = useState({
     id: "",
@@ -72,23 +61,6 @@ export default function CompanionWorkspace() {
     }
   }
 
-  function selectFiles(event) {
-    const files = Array.from(event.target.files || []);
-    if (
-      files.length > MAX_FILES ||
-      files.reduce((sum, file) => sum + file.size, 0) > MAX_BYTES ||
-      files.some((file) => !allowedTypes.includes(file.type))
-    ) {
-      setError(
-        "附件限 JPG、PNG、WebP、MP4、MOV 或 PDF，最多 5 個檔案、合計 150MB。",
-      );
-      event.target.value = "";
-      return;
-    }
-    setError("");
-    setForm({ ...form, files });
-  }
-
   async function submit(event) {
     event.preventDefault();
     if (!project?.activeWeek) return;
@@ -99,11 +71,10 @@ export default function CompanionWorkspace() {
     body.append("nickname", form.nickname);
     body.append("response", form.response);
     body.append("consent", String(form.consent));
-    form.files.forEach((file) => body.append("files", file));
     try {
       const data = await request("/submissions", { method: "POST", body });
       setSuccess(data);
-      setForm({ nickname: "", response: "", consent: false, files: [] });
+      setForm({ nickname: "", response: "", consent: false });
     } catch (submitError) {
       setError(submitError.message);
     } finally {
@@ -312,25 +283,6 @@ export default function CompanionWorkspace() {
                       }
                       className="mt-2 w-full border border-gray-300 rounded-lg p-3"
                     />
-                  </label>
-                  <label className="block font-bold mt-5">
-                    附件（選填）
-                    <input
-                      onChange={selectFiles}
-                      accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,application/pdf"
-                      multiple
-                      type="file"
-                      className="mt-2 block w-full text-sm"
-                    />
-                    <span className="block font-normal text-sm text-gray-500 mt-2">
-                      最多 5 個檔案、合計不超過 150MB。支援
-                      JPG、PNG、WebP、MP4、MOV、PDF。嚴禁上傳可辨識的臉部影像或影片。
-                    </span>
-                    {form.files.length > 0 && (
-                      <span className="block font-normal text-sm mt-2">
-                        已選：{form.files.map((file) => file.name).join("、")}
-                      </span>
-                    )}
                   </label>
                   <label className="flex gap-3 items-start mt-6 p-4 bg-yellow-50 rounded-xl">
                     <input

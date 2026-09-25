@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSiteData } from '../contexts/SiteDataContext'
 
 function NodeMap() {
@@ -28,6 +28,110 @@ function materialUrl(material) {
 
 function materialLabel(material) {
   return typeof material === 'string' ? '開啟教材' : material.title || material.name || material.label || '開啟教材'
+}
+
+function CoLearningCloudBoard({ outcomes }) {
+  const [activeOutcome, setActiveOutcome] = useState(null)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStart = useRef(null)
+  const dragged = useRef(false)
+
+  useEffect(() => {
+    if (!activeOutcome) return undefined
+
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setActiveOutcome(null)
+    }
+
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [activeOutcome])
+
+  const startPan = (event) => {
+    if (event.button !== undefined && event.button !== 0) return
+    event.currentTarget.setPointerCapture(event.pointerId)
+    dragStart.current = { x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y }
+    dragged.current = false
+    setIsDragging(true)
+  }
+
+  const movePan = (event) => {
+    if (!dragStart.current) return
+    const x = event.clientX - dragStart.current.x
+    const y = event.clientY - dragStart.current.y
+    if (Math.abs(x) > 5 || Math.abs(y) > 5) dragged.current = true
+    setPan({ x: dragStart.current.panX + x, y: dragStart.current.panY + y })
+  }
+
+  const endPan = (event) => {
+    if (!dragStart.current) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+    dragStart.current = null
+    setIsDragging(false)
+    if (dragged.current) window.setTimeout(() => { dragged.current = false }, 0)
+  }
+
+  return (
+    <>
+      <div
+        className={`relative mt-8 h-[29rem] overflow-hidden rounded-[2rem] border-2 border-wu-black bg-wu-black shadow-[8px_8px_0_#ffd52e] touch-none sm:h-[34rem] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onPointerDown={startPan}
+        onPointerMove={movePan}
+        onPointerUp={endPan}
+        onPointerCancel={endPan}
+        aria-label="學伴共學雲端成果牆，可拖曳探索"
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-40" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+        <div className="pointer-events-none absolute left-8 top-8 border-l-2 border-wu-yellow pl-3 text-sm font-bold leading-6 text-white/80 sm:left-12 sm:top-10">
+          拖曳雲端，探索每一位學伴的共學足跡
+          <br /><span className="text-wu-yellow">點擊雲朵，閱讀完整分享</span>
+        </div>
+        <div className="absolute left-1/2 top-1/2 h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:h-[42rem] sm:w-[68rem]" style={{ transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px))` }}>
+          {outcomes.map((outcome, index) => {
+            const x = 8 + ((index * 37) % 78)
+            const y = 15 + ((index * 29) % 65)
+            const large = index % 3 === 0
+            return (
+              <button
+                key={outcome.id || `${outcome.nickname}-${index}`}
+                type="button"
+                className={`group absolute -translate-x-1/2 -translate-y-1/2 text-left focus:outline-none focus-visible:ring-4 focus-visible:ring-wu-yellow ${large ? 'w-40 sm:w-52' : 'w-32 sm:w-40'}`}
+                style={{ left: `${x}%`, top: `${y}%` }}
+                onClick={() => { if (!dragged.current) setActiveOutcome(outcome) }}
+                aria-label={`閱讀 ${outcome.nickname || '學伴'} 的共學分享`}
+              >
+                <span className="relative block rounded-[48%_52%_48%_52%/55%_45%_55%_45%] border-2 border-wu-black bg-white px-5 py-5 shadow-[5px_5px_0_#3b82f6] transition-transform duration-200 group-hover:-translate-y-1 group-focus-visible:-translate-y-1">
+                  <span className="absolute -left-3 bottom-2 h-7 w-10 rounded-full border-2 border-wu-black bg-white" />
+                  <span className="absolute -right-2 top-3 h-6 w-8 rounded-full border-2 border-wu-black bg-white" />
+                  <span className="relative block text-xs font-black tracking-wider text-wu-blue">學伴共學</span>
+                  <span className="relative mt-1 block truncate text-lg font-black text-wu-black">{outcome.nickname || '匿名學伴'}</span>
+                  <span className="relative mt-2 block truncate text-xs font-bold text-gray-500">{outcome.weekId ? `第 ${outcome.weekId} 週` : '點擊閱讀'}</span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        <p className="pointer-events-none absolute bottom-5 right-6 rounded-full bg-wu-yellow px-3 py-1 text-xs font-black text-wu-black">{outcomes.length} 位學伴已加入</p>
+      </div>
+
+      {activeOutcome && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-wu-black/80 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setActiveOutcome(null) }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="outcome-dialog-title" className="max-h-[85vh] w-full max-w-2xl overflow-y-auto border-2 border-wu-black bg-white shadow-[10px_10px_0_#ffd52e]">
+            <div className="flex items-start justify-between border-b-2 border-wu-black bg-wu-blue p-5 text-white">
+              <div><p className="text-xs font-black tracking-[0.18em] text-wu-yellow">學伴的共學足跡</p><h3 id="outcome-dialog-title" className="mt-1 text-2xl font-black">{activeOutcome.nickname || '匿名學伴'}</h3></div>
+              <button type="button" onClick={() => setActiveOutcome(null)} className="border-2 border-white px-3 py-1 font-black transition-colors hover:bg-white hover:text-wu-black" aria-label="關閉成果詳情">關閉</button>
+            </div>
+            <div className="p-6 sm:p-8">
+              <h4 className="mt-2 text-lg font-black text-wu-black">我的分享</h4>
+              <p className="mt-3 whitespace-pre-wrap leading-8 text-gray-700">{activeOutcome.response || '這位學伴尚未留下文字分享。'}</p>
+              {activeOutcome.feedback && <div className="mt-7 border-l-4 border-wu-yellow bg-gray-50 p-5"><p className="text-sm font-black text-wu-blue">老師的回饋</p><p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700">{activeOutcome.feedback}</p></div>}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }
 
 export default function Projects() {
@@ -136,16 +240,7 @@ export default function Projects() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <h2 className="text-3xl font-black text-wu-black">已核准成果</h2>
           <p className="mt-2 text-gray-500">Approved outcomes</p>
-          {outcomes.length === 0 ? <p className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-gray-500">成果將在取得核准後公開於此。</p> : (
-            <div className="mt-8 columns-1 gap-5 sm:columns-2 lg:columns-3">
-              {outcomes.map((outcome, index) => (
-                <article key={outcome.id || index} className="mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-white shadow-sm">
-                  {outcome.attachments?.filter((attachment) => attachment.contentType?.startsWith('image/')).map((attachment) => <img key={attachment.id} src={attachment.url} alt="學伴共學成果附件" className="w-full object-cover" loading="lazy" />)}
-                  <div className="p-5"><p className="text-xs font-bold text-wu-blue">學伴投稿</p><h3 className="mt-1 font-bold text-wu-black">{outcome.nickname}</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">{outcome.response}</p>{outcome.attachments?.filter((attachment) => !attachment.contentType?.startsWith('image/')).map((attachment) => <a key={attachment.id} href={attachment.url} target="_blank" rel="noreferrer" className="mt-3 block text-sm font-bold text-wu-blue underline">{attachment.fileName}</a>)}{outcome.feedback && <details className="mt-4 border-t border-gray-100 pt-3"><summary className="cursor-pointer text-sm font-bold text-wu-blue">查看講師回饋</summary><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">{outcome.feedback}</p></details>}</div>
-                </article>
-              ))}
-            </div>
-          )}
+          {outcomes.length === 0 ? <p className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-gray-500">成果將在取得核准後公開於此。</p> : <CoLearningCloudBoard outcomes={outcomes} />}
         </div>
       </section>
     </>
