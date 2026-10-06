@@ -191,7 +191,7 @@ export default function CompanionWorkspace() {
             {week ? (
               <div className="bg-wu-black text-white rounded-2xl p-6 md:p-8 mb-6">
                 <p className="text-wu-yellow font-bold">
-                  第 {week.weekNumber} 週
+                  第 {week.questionNumber || week.weekNumber} 題
                 </p>
                 <h2 className="text-2xl md:text-3xl font-black mt-2">
                   {week.title}

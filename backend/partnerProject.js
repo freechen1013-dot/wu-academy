@@ -228,7 +228,7 @@ export function createPartnerProjectRouter() {
     try {
       const [weeks, submissions] = await Promise.all([
         rest('project_weeks?status=in.(active,closed)&order=week_number.asc'),
-        rest('project_submissions?status=eq.approved&select=id,week_id,nickname,response,feedback,created_at&order=created_at.desc'),
+        rest('project_submissions?status=eq.approved&select=id,week_id,nickname,response,feedback,question_number,question_zh_snapshot,question_en_snapshot,created_at&order=created_at.desc'),
       ]);
       const outcomes = (await attachSignedMedia(submissions)).map((submission) => ({
         id: submission.id,
@@ -236,12 +236,15 @@ export function createPartnerProjectRouter() {
         nickname: submission.nickname,
         response: submission.response,
         feedback: submission.feedback,
+        questionNumber: submission.question_number,
+        question: submission.question_zh_snapshot,
+        questionEn: submission.question_en_snapshot,
         approved: true,
         createdAt: submission.created_at,
         attachments: submission.attachments,
       }));
       const mappedWeeks = weeks.map((week) => ({
-        id: week.id, weekNumber: week.week_number, title: week.title_zh, titleEn: week.title_en,
+        id: week.id, weekNumber: week.week_number, questionNumber: week.question_number, title: week.title_zh, titleEn: week.title_en,
         question: week.question_zh, questionEn: week.question_en, materials: week.materials, status: week.status,
       }));
       res.json({ weeks: mappedWeeks, activeWeek: mappedWeeks.find((week) => week.status === 'active') || null, outcomes });
@@ -254,7 +257,7 @@ export function createPartnerProjectRouter() {
   router.get('/review-queue', requireSession(['director', 'lecturer']), async (req, res) => {
     try {
       const [weeks, submissions] = await Promise.all([
-        rest('project_weeks?select=id,week_number,title_zh,assigned_instructor,status&order=week_number.asc'),
+        rest('project_weeks?select=id,week_number,question_number,title_zh,assigned_instructor,status&order=week_number.asc'),
         rest('project_submissions?select=id,week_id,nickname,response,status,consented_at,review_note,feedback,created_at&order=created_at.asc'),
       ]);
       const allowedWeeks = req.partnerSession.role === 'director'
@@ -300,12 +303,12 @@ export function createPartnerProjectRouter() {
     if (files.length > MAX_FILES || files.some((file) => !ALLOWED_TYPES.get(file.mimetype)?.includes(file.originalname.slice(file.originalname.lastIndexOf('.')).toLowerCase()))) return apiError(res, 400, 'Files must be JPG, PNG, WebP, MP4, MOV, or PDF');
     if (files.reduce((total, file) => total + file.size, 0) > MAX_TOTAL_BYTES) return apiError(res, 413, 'Attachments may total at most 150MB');
     try {
-      const weeks = await rest(`project_weeks?id=eq.${encodeURIComponent(weekId)}&status=eq.active&select=id,week_number,assigned_instructor`);
+      const weeks = await rest(`project_weeks?id=eq.${encodeURIComponent(weekId)}&status=eq.active&select=id,week_number,question_number,question_zh,question_en,assigned_instructor`);
       if (!weeks.length) return apiError(res, 409, 'This week is not accepting submissions');
       const editCode = crypto.randomBytes(18).toString('base64url');
       await rest('project_submissions', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Prefer: 'return=representation' },
-        body: JSON.stringify({ week_id: weekId, nickname, response, consented_at: new Date().toISOString(), submission_code_hash: submissionCodeHash(editCode) }),
+        body: JSON.stringify({ week_id: weekId, nickname, response, consented_at: new Date().toISOString(), submission_code_hash: submissionCodeHash(editCode), question_number: weeks[0].question_number, question_zh_snapshot: weeks[0].question_zh, question_en_snapshot: weeks[0].question_en }),
       });
       const createdSubmissions = await rest(`project_submissions?week_id=eq.${encodeURIComponent(weekId)}&nickname=eq.${encodeURIComponent(nickname)}&select=id`);
       const submission = createdSubmissions?.[0];

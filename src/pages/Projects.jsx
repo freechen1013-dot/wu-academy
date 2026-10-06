@@ -30,12 +30,38 @@ function materialLabel(material) {
   return typeof material === 'string' ? '開啟教材' : material.title || material.name || material.label || '開啟教材'
 }
 
+const questionColors = [
+  { solid: '#ffd52e', light: '#fff7cc' },
+  { solid: '#3b82f6', light: '#dbeafe' },
+  { solid: '#f472b6', light: '#fce7f3' },
+  { solid: '#34d399', light: '#d1fae5' },
+  { solid: '#a78bfa', light: '#ede9fe' },
+]
+
+function questionLabel(questionNumber) {
+  return questionNumber === undefined || questionNumber === null || questionNumber === '' ? '未分類題目' : `第 ${questionNumber} 題`
+}
+
+function questionColor(questionNumber) {
+  const value = String(questionNumber ?? 'unassigned')
+  const numericValue = Number(value)
+  const index = Number.isFinite(numericValue)
+    ? Math.abs(numericValue) % questionColors.length
+    : [...value].reduce((total, character) => total + character.charCodeAt(0), 0) % questionColors.length
+  return questionColors[index]
+}
+
 function CoLearningCloudBoard({ outcomes }) {
   const [activeOutcome, setActiveOutcome] = useState(null)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef(null)
   const dragged = useRef(false)
+  const questionGroups = outcomes.reduce((groups, outcome) => {
+    const key = outcome.questionNumber ?? 'unassigned'
+    if (!groups.some((group) => group.key === key)) groups.push({ key, questionNumber: outcome.questionNumber })
+    return groups
+  }, [])
 
   useEffect(() => {
     if (!activeOutcome) return undefined
@@ -87,6 +113,15 @@ function CoLearningCloudBoard({ outcomes }) {
           拖曳雲端，探索每一位學伴的共學足跡
           <br /><span className="text-wu-yellow">點擊雲朵，閱讀完整分享</span>
         </div>
+        <div className="pointer-events-none absolute right-5 top-5 z-10 max-w-[42%] rounded-xl border border-white/20 bg-wu-black/75 p-3 text-xs font-bold text-white sm:right-8 sm:top-8">
+          <p className="mb-2 text-white/70">題目圖例</p>
+          <div className="flex flex-wrap gap-2">
+            {questionGroups.map((group) => {
+              const color = questionColor(group.questionNumber)
+              return <span key={group.key} className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-full border border-white/60" style={{ backgroundColor: color.solid }} />{questionLabel(group.questionNumber)}</span>
+            })}
+          </div>
+        </div>
         <div className="absolute inset-0" style={{ transform: `translate(${pan.x}px, ${pan.y}px)` }}>
           {outcomes.map((outcome, index) => {
             const angle = index * 2.4 - Math.PI / 2
@@ -94,6 +129,7 @@ function CoLearningCloudBoard({ outcomes }) {
             const x = 50 + Math.cos(angle) * distance
             const y = 50 + Math.sin(angle) * distance * 0.72
             const large = index % 3 === 0
+            const color = questionColor(outcome.questionNumber)
             return (
               <button
                 key={outcome.id || `${outcome.nickname}-${index}`}
@@ -104,10 +140,10 @@ function CoLearningCloudBoard({ outcomes }) {
                 onClick={() => { if (!dragged.current) setActiveOutcome(outcome) }}
                 aria-label={`閱讀 ${outcome.nickname || '學伴'} 的共學分享`}
               >
-                <span className="relative block rounded-[48%_52%_48%_52%/55%_45%_55%_45%] border-2 border-wu-black bg-white px-5 py-5 shadow-[5px_5px_0_#3b82f6] transition-transform duration-200 group-hover:-translate-y-1 group-focus-visible:-translate-y-1">
-                  <span className="absolute -left-3 bottom-2 h-7 w-10 rounded-full border-2 border-wu-black bg-white" />
-                  <span className="absolute -right-2 top-3 h-6 w-8 rounded-full border-2 border-wu-black bg-white" />
-                  <span className="relative block text-xs font-black tracking-wider text-wu-blue">學伴共學</span>
+                <span className="relative block rounded-[48%_52%_48%_52%/55%_45%_55%_45%] border-2 border-wu-black px-5 py-5 transition-transform duration-200 group-hover:-translate-y-1 group-focus-visible:-translate-y-1" style={{ backgroundColor: color.light, boxShadow: `5px 5px 0 ${color.solid}` }}>
+                  <span className="absolute -left-3 bottom-2 h-7 w-10 rounded-full border-2 border-wu-black" style={{ backgroundColor: color.light }} />
+                  <span className="absolute -right-2 top-3 h-6 w-8 rounded-full border-2 border-wu-black" style={{ backgroundColor: color.light }} />
+                  <span className="relative block text-xs font-black tracking-wider text-wu-blue">{questionLabel(outcome.questionNumber)}</span>
                   <span className="relative mt-1 block truncate text-lg font-black text-wu-black">{outcome.nickname || '匿名學伴'}</span>
                   <span className="relative mt-2 block truncate text-xs font-bold text-gray-500">點擊閱讀完整分享</span>
                 </span>
@@ -126,6 +162,11 @@ function CoLearningCloudBoard({ outcomes }) {
               <button type="button" onClick={() => setActiveOutcome(null)} className="border-2 border-white px-3 py-1 font-black transition-colors hover:bg-white hover:text-wu-black" aria-label="關閉成果詳情">關閉</button>
             </div>
             <div className="p-6 sm:p-8">
+              <div className="border-l-4 p-5" style={{ borderColor: questionColor(activeOutcome.questionNumber).solid, backgroundColor: questionColor(activeOutcome.questionNumber).light }}>
+                <p className="text-sm font-black text-wu-black">{questionLabel(activeOutcome.questionNumber)}</p>
+                <p className="mt-2 whitespace-pre-wrap text-lg font-black leading-7 text-wu-black">{activeOutcome.question || '題目尚未提供。'}</p>
+                {activeOutcome.questionEn && <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">{activeOutcome.questionEn}</p>}
+              </div>
               <h4 className="mt-2 text-lg font-black text-wu-black">我的分享</h4>
               <p className="mt-3 whitespace-pre-wrap leading-8 text-gray-700">{activeOutcome.response || '這位學伴尚未留下文字分享。'}</p>
               {activeOutcome.feedback && <div className="mt-7 border-l-4 border-wu-yellow bg-gray-50 p-5"><p className="text-sm font-black text-wu-blue">老師的回饋</p><p className="mt-2 whitespace-pre-wrap leading-7 text-gray-700">{activeOutcome.feedback}</p></div>}
@@ -212,6 +253,7 @@ export default function Projects() {
               {activityState === 'ready' && !activeWeek && <p className="mt-5 text-sm text-gray-500">本週活動尚未公告，敬請期待。</p>}
               {activityState === 'ready' && activeWeek && (
                 <div className="mt-5">
+                  <p className="text-sm font-black text-wu-blue">{activeWeek.questionNumber === undefined || activeWeek.questionNumber === null || activeWeek.questionNumber === '' ? '本週一問' : `第 ${activeWeek.questionNumber} 題`}</p>
                   <p className="font-bold text-wu-black">{activeWeek.title || activeWeek.name || '本週共學活動'}</p>
                   {(activeWeek.date || activeWeek.description || activeWeek.detail) && <p className="mt-1 text-sm leading-6 text-gray-600">{activeWeek.date && `${activeWeek.date}｜`}{activeWeek.description || activeWeek.detail}</p>}
                   {materials.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{materials.map((material, index) => materialUrl(material) && <a key={materialUrl(material) || index} href={materialUrl(material)} className="rounded-full bg-wu-yellow/20 px-3 py-1.5 text-sm font-bold text-wu-black transition-colors hover:bg-wu-yellow">{materialLabel(material)}</a>)}</div>}
