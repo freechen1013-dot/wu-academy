@@ -257,7 +257,7 @@ export function createPartnerProjectRouter() {
   router.get('/review-queue', requireSession(['director', 'lecturer']), async (req, res) => {
     try {
       const [weeks, submissions] = await Promise.all([
-        rest('project_weeks?select=id,week_number,question_number,title_zh,assigned_instructor,status&order=week_number.asc'),
+        rest('project_weeks?select=id,week_number,question_number,title_zh,question_zh,question_en,assigned_instructor,status&order=week_number.asc'),
         rest('project_submissions?select=id,week_id,nickname,response,status,consented_at,review_note,feedback,created_at&order=created_at.asc'),
       ]);
       const allowedWeeks = req.partnerSession.role === 'director'

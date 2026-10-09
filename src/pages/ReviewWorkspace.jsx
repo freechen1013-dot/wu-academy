@@ -103,6 +103,7 @@ export default function ReviewWorkspace() {
 
   const weekName = (id) =>
     queue?.weeks.find((week) => week.id === id)?.title_zh || "未命名週次";
+  const activeWeeks = queue?.weeks.filter((week) => week.status === "active") || [];
   return (
     <section className="bg-gradient-to-b from-yellow-50 via-white to-white py-12 md:py-20 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
@@ -166,18 +167,47 @@ export default function ReviewWorkspace() {
                 登出
               </button>
             </div>
-            {!queue ? (
-              <p className="text-center py-12">載入中...</p>
-            ) : queue.submissions.length === 0 ? (
-              <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
-                目前沒有投稿紀錄。
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {queue.submissions.map((submission) => (
-                  <article
-                    key={submission.id}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+             {!queue ? (
+               <p className="text-center py-12">載入中...</p>
+             ) : (
+               <div className="space-y-6">
+                 {activeWeeks.length > 0 && (
+                   <section className="bg-wu-blue text-white rounded-2xl p-6 md:p-8 shadow-sm">
+                     <p className="text-sm font-bold tracking-widest text-yellow-200">
+                       目前分派題目
+                     </p>
+                     <div className="mt-4 space-y-5">
+                       {activeWeeks.map((week) => (
+                         <div
+                           key={week.id}
+                           className="border-t border-white/30 pt-5 first:border-t-0 first:pt-0"
+                         >
+                           <p className="font-black text-yellow-200">
+                             第 {week.question_number} 題
+                           </p>
+                           <h2 className="text-xl font-black mt-1">
+                             {week.title_zh}
+                           </h2>
+                           <p className="mt-3 text-lg font-bold">
+                             {week.question_zh}
+                           </p>
+                           <p className="mt-1 text-sm text-blue-100">
+                             {week.question_en}
+                           </p>
+                         </div>
+                       ))}
+                     </div>
+                   </section>
+                 )}
+                 {queue.submissions.length === 0 ? (
+                   <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
+                     目前沒有投稿紀錄。
+                   </div>
+                 ) : (
+                   queue.submissions.map((submission) => (
+                   <article
+                     key={submission.id}
+                     className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
                   >
                     <div className="p-6 md:p-8">
                       <div className="flex flex-wrap gap-3 justify-between items-start">
@@ -275,10 +305,11 @@ export default function ReviewWorkspace() {
                         </p>
                       )}
                     </div>
-                  </article>
-                ))}
-              </div>
-            )}
+                   </article>
+                   ))
+                 )}
+               </div>
+             )}
           </>
         )}
       </div>
